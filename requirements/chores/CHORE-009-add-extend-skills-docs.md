@@ -28,8 +28,8 @@ Add the Anthropic `extend-claude-with-skills.md` documentation as a tracked refe
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-13
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-agent-skills/pull/N)
+**Pull Request:** [#22](https://github.com/lwndev/lwndev-agent-skills/pull/22)
