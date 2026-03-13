@@ -107,9 +107,9 @@ Adding `allowed-tools` is additive. Skills must continue to work in environments
 
 ## Acceptance Criteria
 
-- [ ] All 7 SKILL.md files have `allowed-tools` in frontmatter
-- [ ] Documenting skills declare: Read, Write, Edit, Glob, Grep
-- [ ] Execution skills declare: Read, Write, Edit, Bash, Glob, Grep, Agent
-- [ ] All skills pass `asm validate`
-- [ ] Tests verify `allowed-tools` presence and correct tool lists
-- [ ] No existing tests broken
+- [x] All 7 SKILL.md files have `allowed-tools` in frontmatter
+- [x] Documenting skills declare: Read, Write, Edit, Glob, Grep
+- [x] Execution skills declare: Read, Write, Edit, Bash, Glob, Grep, Agent
+- [x] All skills pass `asm validate`
+- [x] Tests verify `allowed-tools` presence and correct tool lists
+- [x] No existing tests broken
