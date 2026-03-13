@@ -55,7 +55,7 @@ Add `allowed-tools` frontmatter to all 7 skill SKILL.md files so Claude Code aut
 
 ### Phase 2: Add allowed-tools to Execution Skills
 **Feature:** [FEAT-003](../features/FEAT-003-skill-allowed-tools.md) | [#19](https://github.com/lwndev/lwndev-agent-skills/issues/19)
-**Status:** Pending
+**Status:** ✅ Complete
 
 #### Rationale
 - Execution skills need `Bash` and `Agent` in addition to the base tools — kept separate to clearly distinguish the two permission tiers
@@ -83,13 +83,13 @@ Add `allowed-tools` frontmatter to all 7 skill SKILL.md files so Claude Code aut
 8. Run `npm run build` to verify `.skill` packages build correctly with updated frontmatter
 
 #### Deliverables
-- [ ] `src/skills/executing-chores/SKILL.md` — `allowed-tools` added
-- [ ] `src/skills/executing-bug-fixes/SKILL.md` — `allowed-tools` added
-- [ ] `src/skills/implementing-plan-phases/SKILL.md` — `allowed-tools` added
-- [ ] `scripts/__tests__/executing-chores.test.ts` — new test file
-- [ ] `scripts/__tests__/implementing-plan-phases.test.ts` — new test file
-- [ ] `scripts/__tests__/executing-bug-fixes.test.ts` — updated with `allowed-tools` tests
-- [ ] All tests pass, build succeeds
+- [x] `src/skills/executing-chores/SKILL.md` — `allowed-tools` added
+- [x] `src/skills/executing-bug-fixes/SKILL.md` — `allowed-tools` added
+- [x] `src/skills/implementing-plan-phases/SKILL.md` — `allowed-tools` added
+- [x] `scripts/__tests__/executing-chores.test.ts` — new test file
+- [x] `scripts/__tests__/implementing-plan-phases.test.ts` — new test file
+- [x] `scripts/__tests__/executing-bug-fixes.test.ts` — updated with `allowed-tools` tests
+- [x] All tests pass, build succeeds
 
 ## Shared Infrastructure
 
