@@ -1,8 +1,8 @@
 # Don't include dependencies
 node_modules/
 
-# Don't include compiled skills
-dist/
+# Don't include compiled scripts
+dist-scripts/
 
 # Don't include local claude settings
 .claude/settings.local.json
