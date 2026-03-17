@@ -132,7 +132,7 @@ Add two new skills (`documenting-qa`, `executing-qa`), a subagent (`qa-verifier`
 
 ### Phase 3: executing-qa Skill
 **Feature:** [FEAT-004](../features/FEAT-004-qa-validation-skills.md) | [#23](https://github.com/lwndev/lwndev-marketplace/issues/23)
-**Status:** Pending
+**Status:** ✅ Complete
 
 #### Rationale
 - Depends on Phase 1 (subagent) and Phase 2 (test plan output) — must come last
@@ -209,11 +209,11 @@ Add two new skills (`documenting-qa`, `executing-qa`), a subagent (`qa-verifier`
 6. Run `npm run validate` and `npm test`
 
 #### Deliverables
-- [ ] `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md` — skill definition with multi-phase stop hook
-- [ ] `plugins/lwndev-sdlc/skills/executing-qa/assets/test-results-template.md` — test results template
-- [ ] `plugins/lwndev-sdlc/skills/executing-qa/references/` — directory created (empty initially)
-- [ ] Tests for executing-qa frontmatter and validation
-- [ ] Skill passes `npm run validate`
+- [x] `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md` — skill definition with multi-phase stop hook
+- [x] `plugins/lwndev-sdlc/skills/executing-qa/assets/test-results-template.md` — test results template
+- [x] `plugins/lwndev-sdlc/skills/executing-qa/references/` — directory created (empty initially)
+- [x] Tests for executing-qa frontmatter and validation
+- [x] Skill passes `npm run validate`
 
 ---
 
