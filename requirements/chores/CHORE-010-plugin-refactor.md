@@ -50,11 +50,11 @@ Refactor the existing 7 skills from standalone `.claude/skills/` installation (v
 
 ## Completion
 
-**Status:** `In Progress`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-16
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-agent-skills/pull/N)
+**Pull Request:** [#25](https://github.com/lwndev/lwndev-agent-skills/pull/25)
 
 ## Notes
 
