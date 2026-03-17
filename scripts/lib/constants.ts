@@ -12,7 +12,7 @@ export function getPluginSkillsSourceDir(pluginName: string): string {
 }
 
 export function getPluginOutputDir(pluginName: string): string {
-  return join(DIST_DIR, `${pluginName}-plugin`);
+  return join(DIST_DIR, pluginName);
 }
 
 export function getPluginSkillsOutputDir(pluginName: string): string {

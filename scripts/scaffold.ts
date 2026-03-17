@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+import { parseArgs } from 'node:util';
 import { input, select, confirm } from '@inquirer/prompts';
 import { accessSync } from 'node:fs';
 import { join } from 'node:path';
@@ -10,6 +11,18 @@ import { printSuccess, printError, printInfo } from './lib/prompts.js';
 
 type TemplateType = NonNullable<ScaffoldTemplateOptions['templateType']>;
 
+function parsePluginFlag(): string | undefined {
+  try {
+    const { values } = parseArgs({
+      options: { plugin: { type: 'string' } },
+      strict: false,
+    });
+    return values.plugin as string | undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 async function main(): Promise<void> {
   // Discover available plugins
   const plugins = await getSourcePlugins();
@@ -19,9 +32,18 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  // Select plugin (auto-select if only one)
+  // Select plugin: --plugin flag > auto-select if only one > interactive prompt
+  const pluginFlag = parsePluginFlag();
   let selectedPlugin: string;
-  if (plugins.length === 1) {
+
+  if (pluginFlag) {
+    if (!plugins.includes(pluginFlag)) {
+      printError(`Plugin "${pluginFlag}" not found. Available: ${plugins.join(', ')}`);
+      process.exit(1);
+    }
+    selectedPlugin = pluginFlag;
+    printInfo(`Using plugin: ${selectedPlugin}`);
+  } else if (plugins.length === 1) {
     selectedPlugin = plugins[0];
     printInfo(`Using plugin: ${selectedPlugin}`);
   } else {

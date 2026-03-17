@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "lwndev-sdlc",
-      "source": "./dist/lwndev-sdlc-plugin",
+      "source": "./dist/lwndev-sdlc",
       "description": "SDLC workflow skills for documenting, planning, and executing features, chores, and bug fixes",
       "version": "1.0.0"
     }

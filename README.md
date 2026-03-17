@@ -72,7 +72,7 @@ npm run format:check     # Check formatting
 │   ├── lib/                           # Shared utilities
 │   └── __tests__/                     # Test suites
 └── dist/                              # Built plugins (gitignored)
-    └── lwndev-sdlc-plugin/
+    └── lwndev-sdlc/
 ```
 
 ### Adding a New Plugin

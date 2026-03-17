@@ -32,24 +32,22 @@ describe('constants', () => {
     });
 
     it('should return correct plugin output dir', () => {
-      expect(getPluginOutputDir('lwndev-sdlc')).toBe(join('dist', 'lwndev-sdlc-plugin'));
+      expect(getPluginOutputDir('lwndev-sdlc')).toBe(join('dist', 'lwndev-sdlc'));
     });
 
     it('should return correct plugin skills output dir', () => {
-      expect(getPluginSkillsOutputDir('lwndev-sdlc')).toBe(
-        join('dist', 'lwndev-sdlc-plugin', 'skills')
-      );
+      expect(getPluginSkillsOutputDir('lwndev-sdlc')).toBe(join('dist', 'lwndev-sdlc', 'skills'));
     });
 
     it('should return correct plugin manifest output dir', () => {
       expect(getPluginManifestOutputDir('lwndev-sdlc')).toBe(
-        join('dist', 'lwndev-sdlc-plugin', '.claude-plugin')
+        join('dist', 'lwndev-sdlc', '.claude-plugin')
       );
     });
 
     it('should work with different plugin names', () => {
       expect(getPluginSourceDir('another-plugin')).toBe(join('src', 'plugins', 'another-plugin'));
-      expect(getPluginOutputDir('another-plugin')).toBe(join('dist', 'another-plugin-plugin'));
+      expect(getPluginOutputDir('another-plugin')).toBe(join('dist', 'another-plugin'));
     });
   });
 });

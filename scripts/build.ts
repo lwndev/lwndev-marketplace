@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { cp, rm, mkdir, copyFile } from 'node:fs/promises';
+import { access, cp, rm, mkdir, copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { validate, ValidationError, type DetailedValidateResult } from 'ai-skills-manager';
 import { getSourcePlugins, getSourceSkills } from './lib/skill-utils.js';
@@ -34,8 +34,9 @@ async function buildPlugin(pluginName: string): Promise<boolean> {
   const skills = await getSourceSkills(pluginName);
 
   if (skills.length === 0) {
-    printWarning(`No skills found for plugin "${pluginName}"`);
-    return true;
+    printError(`No skills found for plugin "${pluginName}"`);
+    await rm(pluginOutputDir, { recursive: true, force: true });
+    return false;
   }
 
   printInfo(`Found ${skills.length} skill(s)`);
@@ -130,8 +131,14 @@ async function buildPlugin(pluginName: string): Promise<boolean> {
   await copyFile(join(pluginSourceDir, 'plugin.json'), join(pluginManifestDir, 'plugin.json'));
   printSuccess('Copied plugin.json');
 
-  await copyFile(join(pluginSourceDir, 'README.md'), join(pluginOutputDir, 'README.md'));
-  printSuccess('Copied README.md');
+  const readmeSrc = join(pluginSourceDir, 'README.md');
+  try {
+    await access(readmeSrc);
+    await copyFile(readmeSrc, join(pluginOutputDir, 'README.md'));
+    printSuccess('Copied README.md');
+  } catch {
+    // README.md is optional
+  }
 
   console.log('');
   printSuccess(`Plugin built at ${pluginOutputDir}`);

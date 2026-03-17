@@ -49,9 +49,9 @@ src/plugins/
 ```
 
 ### Plugin Output Structure
-Each plugin builds to `dist/<plugin-name>-plugin/`:
+Each plugin builds to `dist/<plugin-name>/`:
 ```
-dist/lwndev-sdlc-plugin/
+dist/lwndev-sdlc/
 ├── .claude-plugin/
 │   └── plugin.json
 ├── skills/
