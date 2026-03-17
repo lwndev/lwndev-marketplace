@@ -58,7 +58,7 @@ Add two new skills (`documenting-qa`, `executing-qa`), a subagent (`qa-verifier`
 
 ### Phase 2: documenting-qa Skill
 **Feature:** [FEAT-004](../features/FEAT-004-qa-validation-skills.md) | [#23](https://github.com/lwndev/lwndev-marketplace/issues/23)
-**Status:** Pending
+**Status:** ✅ Complete
 
 #### Rationale
 - `documenting-qa` is the entry point for the QA workflow — users run it first to generate a test plan
@@ -122,11 +122,11 @@ Add two new skills (`documenting-qa`, `executing-qa`), a subagent (`qa-verifier`
 6. Run `npm run validate` and `npm test`
 
 #### Deliverables
-- [ ] `plugins/lwndev-sdlc/skills/documenting-qa/SKILL.md` — skill definition with stop hook
-- [ ] `plugins/lwndev-sdlc/skills/documenting-qa/assets/test-plan-template.md` — test plan template
-- [ ] `plugins/lwndev-sdlc/skills/documenting-qa/references/` — directory created (empty initially)
-- [ ] Tests for documenting-qa frontmatter and validation
-- [ ] Skill passes `npm run validate`
+- [x] `plugins/lwndev-sdlc/skills/documenting-qa/SKILL.md` — skill definition with stop hook
+- [x] `plugins/lwndev-sdlc/skills/documenting-qa/assets/test-plan-template.md` — test plan template
+- [x] `plugins/lwndev-sdlc/skills/documenting-qa/references/` — directory created (empty initially)
+- [x] Tests for documenting-qa frontmatter and validation
+- [x] Skill passes `npm run validate`
 
 ---
 
