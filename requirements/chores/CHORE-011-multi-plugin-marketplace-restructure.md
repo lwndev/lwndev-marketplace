@@ -56,11 +56,11 @@ Restructure the repository from single-plugin hardcoded layout to a multi-plugin
 
 ## Completion
 
-**Status:** `In Progress`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-16
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#27](https://github.com/lwndev/lwndev-marketplace/pull/27)
 
 ## Notes
 
