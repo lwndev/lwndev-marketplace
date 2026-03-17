@@ -2,7 +2,7 @@ import { execSync } from 'node:child_process';
 import { access, readdir, readFile, rm, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const PLUGIN_DIR = 'dist/lwndev-sdlc-plugin';
+const PLUGIN_DIR = 'dist/lwndev-sdlc';
 const MANIFEST_PATH = join(PLUGIN_DIR, '.claude-plugin', 'plugin.json');
 const SKILLS_DIR = join(PLUGIN_DIR, 'skills');
 
@@ -94,8 +94,40 @@ describe('build script validation', () => {
   });
 });
 
+describe('marketplace manifest validation', () => {
+  it('should have source paths that resolve to built plugin directories', async () => {
+    execSync('npm run build', { stdio: 'pipe' });
+
+    const content = await readFile('.claude-plugin/marketplace.json', 'utf-8');
+    const marketplace = JSON.parse(content);
+
+    for (const plugin of marketplace.plugins) {
+      const sourcePath = plugin.source.replace('./', '');
+      await expect(access(sourcePath)).resolves.toBeUndefined();
+      await expect(
+        access(join(sourcePath, '.claude-plugin', 'plugin.json'))
+      ).resolves.toBeUndefined();
+    }
+  });
+
+  it('should list plugins whose names match built plugin.json names', async () => {
+    const content = await readFile('.claude-plugin/marketplace.json', 'utf-8');
+    const marketplace = JSON.parse(content);
+
+    for (const plugin of marketplace.plugins) {
+      const sourcePath = plugin.source.replace('./', '');
+      const manifestContent = await readFile(
+        join(sourcePath, '.claude-plugin', 'plugin.json'),
+        'utf-8'
+      );
+      const manifest = JSON.parse(manifestContent);
+      expect(manifest.name).toBe(plugin.name);
+    }
+  });
+});
+
 describe('build script failure handling', () => {
-  const badSkillDir = join('src', 'skills', '_test-bad-skill');
+  const badSkillDir = join('src', 'plugins', 'lwndev-sdlc', 'skills', '_test-bad-skill');
 
   afterAll(async () => {
     await rm(badSkillDir, { recursive: true, force: true });

@@ -1,15 +1,60 @@
 #!/usr/bin/env tsx
+import { parseArgs } from 'node:util';
 import { input, select, confirm } from '@inquirer/prompts';
 import { accessSync } from 'node:fs';
+import { join } from 'node:path';
 import { scaffold as scaffoldSkill } from 'ai-skills-manager';
 import type { ScaffoldTemplateOptions } from 'ai-skills-manager';
-import { SKILLS_SOURCE_DIR } from './lib/constants.js';
+import { getPluginSkillsSourceDir } from './lib/constants.js';
+import { getSourcePlugins } from './lib/skill-utils.js';
 import { printSuccess, printError, printInfo } from './lib/prompts.js';
 
 type TemplateType = NonNullable<ScaffoldTemplateOptions['templateType']>;
 
+function parsePluginFlag(): string | undefined {
+  try {
+    const { values } = parseArgs({
+      options: { plugin: { type: 'string' } },
+      strict: false,
+    });
+    return values.plugin as string | undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 async function main(): Promise<void> {
-  printInfo('Create a new skill in src/skills/');
+  // Discover available plugins
+  const plugins = await getSourcePlugins();
+
+  if (plugins.length === 0) {
+    printError('No plugins found in src/plugins/');
+    process.exit(1);
+  }
+
+  // Select plugin: --plugin flag > auto-select if only one > interactive prompt
+  const pluginFlag = parsePluginFlag();
+  let selectedPlugin: string;
+
+  if (pluginFlag) {
+    if (!plugins.includes(pluginFlag)) {
+      printError(`Plugin "${pluginFlag}" not found. Available: ${plugins.join(', ')}`);
+      process.exit(1);
+    }
+    selectedPlugin = pluginFlag;
+    printInfo(`Using plugin: ${selectedPlugin}`);
+  } else if (plugins.length === 1) {
+    selectedPlugin = plugins[0];
+    printInfo(`Using plugin: ${selectedPlugin}`);
+  } else {
+    selectedPlugin = await select<string>({
+      message: 'Select plugin:',
+      choices: plugins.map((p) => ({ name: p, value: p })),
+    });
+  }
+
+  const skillsDir = getPluginSkillsSourceDir(selectedPlugin);
+  printInfo(`Create a new skill in ${skillsDir}/`);
 
   // Prompt for skill name
   const name = await input({
@@ -133,7 +178,7 @@ async function main(): Promise<void> {
   }
 
   // Check if skill already exists
-  const skillPath = `${SKILLS_SOURCE_DIR}/${name}`;
+  const skillPath = join(skillsDir, name);
   let force = false;
   try {
     accessSync(skillPath);
@@ -154,7 +199,7 @@ async function main(): Promise<void> {
     const result = await scaffoldSkill({
       name,
       description,
-      output: SKILLS_SOURCE_DIR,
+      output: skillsDir,
       allowedTools: allowedTools.length > 0 ? allowedTools : undefined,
       force,
       template,
