@@ -51,7 +51,7 @@ dist/lwndev-sdlc-plugin/
 ### Marketplace
 The repository hosts a marketplace manifest at `.claude-plugin/marketplace.json` for plugin distribution. Users install via:
 ```bash
-/plugin marketplace add lwndev/lwndev-agent-skills
+/plugin marketplace add lwndev/lwndev-marketplace
 /plugin install lwndev-sdlc@lwndev-plugins
 ```
 

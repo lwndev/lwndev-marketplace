@@ -20,7 +20,7 @@ SDLC workflow skills for Claude Code — documenting, planning, and executing fe
 
 ```bash
 # Add the marketplace
-/plugin marketplace add lwndev/lwndev-agent-skills
+/plugin marketplace add lwndev/lwndev-marketplace
 
 # Install the plugin
 /plugin install lwndev-sdlc@lwndev-plugins
@@ -36,7 +36,7 @@ Add to your project's `.claude/settings.json`:
     "lwndev-plugins": {
       "source": {
         "source": "github",
-        "repo": "lwndev/lwndev-agent-skills"
+        "repo": "lwndev/lwndev-marketplace"
       }
     }
   },

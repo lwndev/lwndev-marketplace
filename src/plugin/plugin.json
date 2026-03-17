@@ -5,7 +5,7 @@
   "author": {
     "name": "lwndev"
   },
-  "repository": "https://github.com/lwndev/lwndev-agent-skills",
+  "repository": "https://github.com/lwndev/lwndev-marketplace",
   "license": "MIT",
   "keywords": ["sdlc", "workflow", "features", "bugs", "chores"]
 }

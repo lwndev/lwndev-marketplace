@@ -1,6 +1,6 @@
 # Agent Skills
 
-[![CI](https://github.com/lwndev/lwndev-agent-skills/actions/workflows/ci.yml/badge.svg)](https://github.com/lwndev/lwndev-agent-skills/actions/workflows/ci.yml)
+[![CI](https://github.com/lwndev/lwndev-marketplace/actions/workflows/ci.yml/badge.svg)](https://github.com/lwndev/lwndev-marketplace/actions/workflows/ci.yml)
 
 A reference implementation for developing, building, and distributing custom Agent Skills for Claude Code as a plugin. Use this project as a template for creating your own skill development workflow.
 
@@ -20,7 +20,7 @@ npm run build
 
 ```bash
 # Add the marketplace
-/plugin marketplace add lwndev/lwndev-agent-skills
+/plugin marketplace add lwndev/lwndev-marketplace
 
 # Install the plugin
 /plugin install lwndev-sdlc@lwndev-plugins
@@ -36,7 +36,7 @@ Add to your project's `.claude/settings.json`:
     "lwndev-plugins": {
       "source": {
         "source": "github",
-        "repo": "lwndev/lwndev-agent-skills"
+        "repo": "lwndev/lwndev-marketplace"
       }
     }
   },
