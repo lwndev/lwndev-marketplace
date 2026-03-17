@@ -47,7 +47,7 @@ describe('plugin structure', () => {
     const manifest = JSON.parse(content);
 
     expect(manifest.name).toBe('lwndev-sdlc');
-    expect(manifest.version).toBe('1.0.0');
+    expect(manifest.version).toBe('1.1.0');
     expect(manifest.description).toBeTruthy();
     expect(manifest.author).toEqual({ name: 'lwndev' });
   });
