@@ -4,7 +4,7 @@
 
 | Field | Value |
 |-------|-------|
-| **Plan ID** | QA-plan-{type}-{id} |
+| **Plan ID** | QA-plan-{id} |
 | **Requirement Type** | FEAT / CHORE / BUG |
 | **Requirement ID** | {ID} |
 | **Source Documents** | <!-- List all source docs: requirements doc, implementation plan, etc. --> |

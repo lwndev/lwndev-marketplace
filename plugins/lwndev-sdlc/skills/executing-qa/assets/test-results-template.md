@@ -4,10 +4,10 @@
 
 | Field | Value |
 |-------|-------|
-| **Results ID** | QA-results-{type}-{id} |
+| **Results ID** | QA-results-{id} |
 | **Requirement Type** | FEAT / CHORE / BUG |
 | **Requirement ID** | {ID} |
-| **Source Test Plan** | `test/test-plans/QA-plan-{type}-{id}.md` |
+| **Source Test Plan** | `test/test-plans/QA-plan-{id}.md` |
 | **Date** | YYYY-MM-DD |
 | **Verdict** | PASS / FAIL |
 | **Verification Iterations** | N |

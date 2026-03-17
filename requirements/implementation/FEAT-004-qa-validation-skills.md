@@ -8,7 +8,7 @@ Add two new skills (`documenting-qa`, `executing-qa`), a subagent (`qa-verifier`
 
 | Feature ID | GitHub Issue | Feature Document | Priority | Complexity | Status |
 |------------|--------------|------------------|----------|------------|--------|
-| FEAT-004   | [#23](https://github.com/lwndev/lwndev-marketplace/issues/23) | [FEAT-004-qa-validation-skills.md](../features/FEAT-004-qa-validation-skills.md) | High | High | Pending |
+| FEAT-004   | [#23](https://github.com/lwndev/lwndev-marketplace/issues/23) | [FEAT-004-qa-validation-skills.md](../features/FEAT-004-qa-validation-skills.md) | High | High | ✅ Complete |
 
 ## Recommended Build Sequence
 
