@@ -32,10 +32,10 @@ describe('build script validation', () => {
     expect(matches.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('should validate all 7 skills', () => {
+  it('should validate all 9 skills', () => {
     const validatedPattern = /Validating: /g;
     const matches = buildOutput.match(validatedPattern) ?? [];
-    expect(matches.length).toBe(7);
+    expect(matches.length).toBe(9);
   });
 });
 
@@ -47,12 +47,12 @@ describe('plugin structure', () => {
     const manifest = JSON.parse(content);
 
     expect(manifest.name).toBe('lwndev-sdlc');
-    expect(manifest.version).toBe('1.0.0');
+    expect(manifest.version).toBe('1.1.0');
     expect(manifest.description).toBeTruthy();
     expect(manifest.author).toEqual({ name: 'lwndev' });
   });
 
-  it('should have skills directory with all 7 skills', async () => {
+  it('should have skills directory with all 9 skills', async () => {
     const skillDirs = await readdir(SKILLS_DIR);
 
     expect(skillDirs).toContain('documenting-features');
@@ -62,7 +62,9 @@ describe('plugin structure', () => {
     expect(skillDirs).toContain('executing-chores');
     expect(skillDirs).toContain('documenting-bugs');
     expect(skillDirs).toContain('executing-bug-fixes');
-    expect(skillDirs.length).toBe(7);
+    expect(skillDirs).toContain('documenting-qa');
+    expect(skillDirs).toContain('executing-qa');
+    expect(skillDirs.length).toBe(9);
   });
 
   it('should include SKILL.md in each skill directory', async () => {
