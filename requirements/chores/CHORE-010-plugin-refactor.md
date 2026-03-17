@@ -18,15 +18,22 @@ Refactor the existing 7 skills from standalone `.claude/skills/` installation (v
 
 ## Affected Files
 
-- `scripts/build.ts` — update to generate plugin directory structure in `dist/`
-- `scripts/install.ts` — update for plugin install workflow
-- `scripts/update.ts` — update for plugin update workflow
-- `scripts/uninstall.ts` — update for plugin uninstall workflow
-- `dist/lwndev-sdlc-plugin/` — new plugin output directory
-- `dist/lwndev-sdlc-plugin/.claude-plugin/plugin.json` — new plugin manifest
+- `scripts/build.ts` — rewritten to generate plugin directory structure in `dist/`
+- `scripts/install.ts` — deleted (replaced by plugin commands)
+- `scripts/update.ts` — deleted (replaced by plugin commands)
+- `scripts/uninstall.ts` — deleted (replaced by plugin commands)
+- `scripts/lib/constants.ts` — added plugin constants, removed scope constants
+- `scripts/lib/skill-utils.ts` — removed unused functions, added `pluginBuildExists()`
+- `scripts/lib/prompts.ts` — removed unused prompt functions
+- `scripts/__tests__/build.test.ts` — rewritten for plugin directory assertions
+- `scripts/__tests__/constants.test.ts` — updated for plugin constants
+- `scripts/__tests__/skill-utils.test.ts` — updated for new utility functions
+- `package.json` — removed install/update/uninstall npm scripts
+- `src/plugin/plugin.json` — new plugin manifest source
+- `src/plugin/README.md` — new plugin README source
 - `.claude-plugin/marketplace.json` — new marketplace manifest at repo root
-- `README.md` — update installation instructions
-- `CLAUDE.md` — update to reflect plugin distribution
+- `README.md` — updated with plugin installation instructions
+- `CLAUDE.md` — updated to reflect plugin distribution model
 
 ## Acceptance Criteria
 

@@ -99,13 +99,6 @@ async function main(): Promise<void> {
     results.push(result);
   }
 
-  // Copy plugin manifest and README
-  await copyFile(join(PLUGIN_SOURCE_DIR, 'plugin.json'), join(PLUGIN_MANIFEST_DIR, 'plugin.json'));
-  printSuccess('Copied plugin.json');
-
-  await copyFile(join(PLUGIN_SOURCE_DIR, 'README.md'), join(PLUGIN_OUTPUT_DIR, 'README.md'));
-  printSuccess('Copied README.md');
-
   // Summary
   console.log('');
   console.log('-'.repeat(50));
@@ -123,8 +116,17 @@ async function main(): Promise<void> {
     for (const f of failed) {
       printError(`  ${f.name}: ${f.error}`);
     }
+    // Clean up partial plugin output on failure
+    await rm(PLUGIN_OUTPUT_DIR, { recursive: true, force: true });
     process.exit(1);
   }
+
+  // Copy plugin manifest and README only on full success
+  await copyFile(join(PLUGIN_SOURCE_DIR, 'plugin.json'), join(PLUGIN_MANIFEST_DIR, 'plugin.json'));
+  printSuccess('Copied plugin.json');
+
+  await copyFile(join(PLUGIN_SOURCE_DIR, 'README.md'), join(PLUGIN_OUTPUT_DIR, 'README.md'));
+  printSuccess('Copied README.md');
 
   console.log('');
   printSuccess(`Plugin built at ${PLUGIN_OUTPUT_DIR}`);

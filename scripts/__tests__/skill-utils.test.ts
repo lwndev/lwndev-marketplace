@@ -59,11 +59,32 @@ describe('skill-utils', () => {
   });
 
   describe('pluginBuildExists', () => {
-    it('should return false when plugin has not been built', async () => {
-      // Before any build, or with a clean dist, this should handle missing dirs gracefully
-      // This test is meaningful when dist is clean; after build tests run it may return true
-      const result = await pluginBuildExists();
-      expect(typeof result).toBe('boolean');
+    it('should return false when plugin output does not exist', async () => {
+      // Temporarily rename the manifest dir to test the false case
+      const { rename } = await import('node:fs/promises');
+      const { PLUGIN_MANIFEST_DIR } = await import('../lib/constants.js');
+      const backupPath = `${PLUGIN_MANIFEST_DIR}-backup`;
+      let renamed = false;
+
+      try {
+        await rename(PLUGIN_MANIFEST_DIR, backupPath);
+        renamed = true;
+      } catch {
+        // Dir doesn't exist (clean dist), false case is naturally true
+      }
+
+      try {
+        const result = await pluginBuildExists();
+        if (renamed) {
+          expect(result).toBe(false);
+        } else {
+          expect(typeof result).toBe('boolean');
+        }
+      } finally {
+        if (renamed) {
+          await rename(backupPath, PLUGIN_MANIFEST_DIR);
+        }
+      }
     });
   });
 });
