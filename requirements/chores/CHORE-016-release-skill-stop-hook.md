@@ -22,19 +22,19 @@ Add a Stop hook and release branch enforcement to the `releasing-plugins` skill.
 
 ## Acceptance Criteria
 
-- [ ] Stop hook blocks Phase 1 completion unless: release branch created, script ran, commit reviewed, branch pushed, PR opened, Phase 2 reminder given
-- [ ] Stop hook blocks Phase 2 completion unless: on main, tag created, tag pushed
-- [ ] Skill includes explicit release branch creation step before running the release script
-- [ ] Skill description includes Phase 2 trigger phrases ("tag the release", "finish the release")
-- [ ] Phase Detection section routes to correct phase on re-invocation
+- [x] Stop hook blocks Phase 1 completion unless: release branch created, script ran, commit reviewed, branch pushed, PR opened, Phase 2 reminder given
+- [x] Stop hook blocks Phase 2 completion unless: on main, tag created, tag pushed
+- [x] Skill includes explicit release branch creation step before running the release script
+- [x] Skill description includes Phase 2 trigger phrases ("tag the release", "finish the release")
+- [x] Phase Detection section routes to correct phase on re-invocation
 
 ## Completion
 
-**Status:** `In Progress`
+**Status:** `Completed`
 
-**Completed:**
+**Completed:** 2026-03-21
 
-**Pull Request:**
+**Pull Request:** [#51](https://github.com/lwndev/lwndev-marketplace/pull/51)
 
 ## Notes
 
