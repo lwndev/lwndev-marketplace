@@ -31,8 +31,8 @@ Update `README.md` and `CLAUDE.md` to reflect the `reviewing-requirements` skill
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-21
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#45](https://github.com/lwndev/lwndev-marketplace/pull/45)
