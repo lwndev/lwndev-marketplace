@@ -93,4 +93,4 @@ Before finalizing, verify:
 | Chore/maintenance task | Use `documenting-chores` skill |
 | Bug or defect report | Use `documenting-bugs` skill |
 
-After documenting a feature, consider running `/reviewing-requirements` to verify the document against the codebase and docs before proceeding. Then use the `creating-implementation-plans` skill to plan the implementation.
+After documenting a feature, consider running `/reviewing-requirements` to verify the document against the codebase and docs, then `/documenting-qa` to create a test plan before proceeding. Then use the `creating-implementation-plans` skill to plan the implementation.

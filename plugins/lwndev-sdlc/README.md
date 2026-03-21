@@ -74,9 +74,8 @@ Skills are invoked as slash commands, namespaced under the plugin:
 
 ## Workflow Chains
 
-The skills form four workflow chains:
+The skills form three workflow chains:
 
-1. **Features**: `documenting-features` → `reviewing-requirements` → `creating-implementation-plans` → `implementing-plan-phases`
-2. **Chores**: `documenting-chores` → `reviewing-requirements` → `executing-chores`
-3. **Bugs**: `documenting-bugs` → `reviewing-requirements` → `executing-bug-fixes`
-4. **QA Validation**: `documenting-qa` → `executing-qa`
+1. **Features**: `documenting-features` → `reviewing-requirements` → `documenting-qa` → `creating-implementation-plans` → `implementing-plan-phases` → `executing-qa`
+2. **Chores**: `documenting-chores` → `reviewing-requirements` → `documenting-qa` → `executing-chores` → `executing-qa`
+3. **Bugs**: `documenting-bugs` → `reviewing-requirements` → `documenting-qa` → `executing-bug-fixes` → `executing-qa`

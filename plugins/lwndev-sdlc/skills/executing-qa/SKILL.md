@@ -25,7 +25,7 @@ Execute QA verification against a test plan, then reconcile requirements documen
 
 - User says "execute qa", "run qa", or "verify implementation"
 - User wants to validate a PR against its requirements
-- After `documenting-qa` has produced a test plan
+- After implementation is complete and `documenting-qa` has produced a test plan
 - Before merging — as a final QA gate
 
 ## Quick Start
@@ -188,7 +188,9 @@ Before finishing, verify:
 | Task | Recommended Approach |
 |------|---------------------|
 | Document requirements first | Use `documenting-features`, `documenting-chores`, or `documenting-bugs` |
+| Review requirements | Use `reviewing-requirements` |
+| Build QA test plan | Use `documenting-qa` (prerequisite for this skill) |
 | Create implementation plan | Use `creating-implementation-plans` |
 | Implement the plan | Use `implementing-plan-phases` |
-| Build QA test plan | Use `documenting-qa` (prerequisite for this skill) |
+| Execute chore or bug fix | Use `executing-chores` or `executing-bug-fixes` |
 | **Execute QA verification** | **Use this skill (`executing-qa`)** |
