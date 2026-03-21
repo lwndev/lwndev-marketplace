@@ -2,31 +2,6 @@
 
 ## [1.3.0] - 2026-03-21
 
-### Other
-
-- Merge pull request #47 from lwndev/chore/CHORE-015-correct-qa-placement
-- Merge pull request #45 from lwndev/chore/CHORE-014-update-docs
-- Merge pull request #43 from lwndev/feat/FEAT-006-reviewing-requirements
-- Merge pull request #40 from lwndev/feat/FEAT-005-plugin-release
-- Merge pull request #36 from lwndev/chore/CHORE-013-relocate-qa-output-paths
-- Merge pull request #31 from lwndev/feat/FEAT-004-qa-validation-skills
-- Merge pull request #30 from lwndev/chore/CHORE-012-flatten-plugin-structure
-- Merge pull request #27 from lwndev/chore/CHORE-011-multi-plugin-restructure
-- Merge pull request #25 from lwndev/chore/CHORE-010-plugin-refactor
-- Merge pull request #22 from lwndev/chore/CHORE-009-add-extend-skills-docs
-- Merge pull request #16 from lwndev/chore/CHORE-007-deprecate-worktrees-skill
-- Add chore document for managing-git-worktrees skill review
-- Add CI status badge to README
-- Add npm audit to CI workflow
-- Add tests and npm audit to pre-commit hook
-- Add pre-commit hook with husky and lint-staged
-- Add GitHub Actions CI workflow
-- Fix project description to remove versioning claim
-- Add project documentation, testing, and tooling
-- Add CLI scripts for ai-skills-manager workflow
-- Updating structure, adding asm dependency, adding gitignore
-- Initial Commit
-
 ### Chores
 
 - **documentation:** address review feedback for PR #47
@@ -104,5 +79,3 @@
 - update CLAUDE.md as reference implementation for ai-skills-manager
 - update README as reference implementation for ai-skills-manager
 - update Available Skills heading in README
-
-
