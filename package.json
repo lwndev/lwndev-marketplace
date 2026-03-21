@@ -10,7 +10,9 @@
     "lint:fix": "eslint scripts/ --fix",
     "format": "prettier --write scripts/",
     "format:check": "prettier --check scripts/",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release": "tsx scripts/release.ts",
+    "release:tag": "tsx scripts/release-tag.ts"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.0.0",
