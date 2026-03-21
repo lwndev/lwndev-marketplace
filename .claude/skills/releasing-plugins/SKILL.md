@@ -1,6 +1,7 @@
 ---
 name: releasing-plugins
 description: Release a plugin version with automated version bumping, changelog generation, and tagging. Use when the user says "release plugin", "bump version", "prepare a release", "cut a release", or wants to publish a new plugin version.
+allowed-tools: Bash Skill
 ---
 
 # Releasing Plugins
