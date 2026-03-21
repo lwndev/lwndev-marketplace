@@ -24,7 +24,7 @@ Build a comprehensive QA test plan from requirements documents. The test plan ma
 
 - User says "document qa", "create test plan", or "qa plan"
 - User provides a requirement ID (FEAT-XXX, CHORE-XXX, BUG-XXX) for QA planning
-- After implementation is complete and before merging — to prepare for QA verification
+- After reviewing requirements and before execution/implementation — to define how the work will be tested
 
 ## Quick Start
 
@@ -145,7 +145,9 @@ Before finishing, verify:
 | Task | Recommended Approach |
 |------|---------------------|
 | Document requirements first | Use `documenting-features`, `documenting-chores`, or `documenting-bugs` |
+| Review requirements | Use `reviewing-requirements` |
+| **Build QA test plan** | **Use this skill (`documenting-qa`)** |
 | Create implementation plan | Use `creating-implementation-plans` |
 | Implement the plan | Use `implementing-plan-phases` |
-| **Build QA test plan** | **Use this skill (`documenting-qa`)** |
+| Execute chore or bug fix | Use `executing-chores` or `executing-bug-fixes` |
 | Execute QA verification | Use `executing-qa` (requires test plan from this skill) |

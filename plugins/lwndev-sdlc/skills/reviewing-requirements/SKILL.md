@@ -305,14 +305,15 @@ Before finishing, verify:
 ## Relationship to Other Skills
 
 ```
-documenting-* → reviewing-requirements → creating-implementation-plans → implementing-plan-phases → documenting-qa → executing-qa
+documenting-* → reviewing-requirements → documenting-qa → creating-implementation-plans / executing-* → executing-qa
 ```
 
 | Task | Recommended Approach |
 |------|---------------------|
 | Document requirements first | Use `documenting-features`, `documenting-chores`, or `documenting-bugs` |
 | **Review requirements** | **Use this skill (`reviewing-requirements`)** |
+| Build QA test plan | Use `documenting-qa` |
 | Create implementation plan | Use `creating-implementation-plans` |
 | Implement the plan | Use `implementing-plan-phases` |
-| Build QA test plan | Use `documenting-qa` |
+| Execute chore or bug fix | Use `executing-chores` or `executing-bug-fixes` |
 | Execute QA verification | Use `executing-qa` |

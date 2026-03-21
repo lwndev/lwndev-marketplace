@@ -107,3 +107,5 @@ Before creating the PR, verify:
 | Chore needs documentation first | Use `documenting-chores`, then this skill |
 | New feature with requirements | Use `documenting-features` -> `creating-implementation-plans` -> `implementing-plan-phases` |
 | Quick fix (no tracking needed) | Direct implementation |
+
+After executing a chore, consider running `/executing-qa` to verify the implementation against the test plan before merging.

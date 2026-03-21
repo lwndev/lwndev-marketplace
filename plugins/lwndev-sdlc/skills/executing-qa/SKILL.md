@@ -188,7 +188,9 @@ Before finishing, verify:
 | Task | Recommended Approach |
 |------|---------------------|
 | Document requirements first | Use `documenting-features`, `documenting-chores`, or `documenting-bugs` |
+| Review requirements | Use `reviewing-requirements` |
+| Build QA test plan | Use `documenting-qa` (prerequisite for this skill) |
 | Create implementation plan | Use `creating-implementation-plans` |
 | Implement the plan | Use `implementing-plan-phases` |
-| Build QA test plan | Use `documenting-qa` (prerequisite for this skill) |
+| Execute chore or bug fix | Use `executing-chores` or `executing-bug-fixes` |
 | **Execute QA verification** | **Use this skill (`executing-qa`)** |

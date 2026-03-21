@@ -75,11 +75,10 @@ skill-name/
 ```
 
 ### Existing Skills (lwndev-sdlc plugin)
-Ten skills exist that form four workflow chains:
-1. **documenting-features** → **reviewing-requirements** → **creating-implementation-plans** → **implementing-plan-phases**
-2. **documenting-chores** → **reviewing-requirements** → **executing-chores**
-3. **documenting-bugs** → **reviewing-requirements** → **executing-bug-fixes**
-4. **documenting-qa** → **executing-qa**
+Ten skills exist that form three workflow chains:
+1. **documenting-features** → **reviewing-requirements** → **documenting-qa** → **creating-implementation-plans** → **implementing-plan-phases** → **executing-qa**
+2. **documenting-chores** → **reviewing-requirements** → **documenting-qa** → **executing-chores** → **executing-qa**
+3. **documenting-bugs** → **reviewing-requirements** → **documenting-qa** → **executing-bug-fixes** → **executing-qa**
 
 ## Key Patterns
 
