@@ -34,11 +34,11 @@ Update the `executing-chores`, `executing-bug-fixes`, and `implementing-plan-pha
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-22
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#60](https://github.com/lwndev/lwndev-marketplace/pull/60)
 
 ## Notes
 
