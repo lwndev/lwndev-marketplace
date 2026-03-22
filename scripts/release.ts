@@ -149,33 +149,36 @@ function groupCommitsByType(commits: ParsedCommit[]): Map<string, ParsedCommit[]
 }
 
 function collapseByScope(commits: ParsedCommit[]): ParsedCommit[] {
-  const scopeMap = new Map<string, ParsedCommit[]>();
+  // Pre-collect commits per scope
+  const scopeGroups = new Map<string, ParsedCommit[]>();
+  for (const commit of commits) {
+    if (!commit.scope) continue;
+    const group = scopeGroups.get(commit.scope) ?? [];
+    group.push(commit);
+    scopeGroups.set(commit.scope, group);
+  }
+
+  // Emit in original order; collapse at first occurrence of each scope
+  const emitted = new Set<string>();
   const result: ParsedCommit[] = [];
 
   for (const commit of commits) {
-    const key = commit.scope ?? '';
-    if (!key) {
+    if (!commit.scope) {
       result.push(commit);
       continue;
     }
-    const group = scopeMap.get(key) ?? [];
-    group.push(commit);
-    scopeMap.set(key, group);
-  }
+    if (emitted.has(commit.scope)) continue;
+    emitted.add(commit.scope);
 
-  for (const [scope, group] of scopeMap) {
+    const group = scopeGroups.get(commit.scope)!;
     if (group.length === 1) {
       result.push(group[0]);
     } else {
-      // Collapse multiple commits with the same scope into one entry
-      // Use the first commit's message as the primary description
-      const messages = group.map((c) => c.message);
-      const combined = messages[0] + (messages.length > 1 ? ` (+${messages.length - 1} more)` : '');
       result.push({
         hash: group[0].hash,
         type: group[0].type,
-        scope,
-        message: combined,
+        scope: commit.scope,
+        message: `${group[0].message} (+${group.length - 1} more)`,
         raw: group[0].raw,
       });
     }
