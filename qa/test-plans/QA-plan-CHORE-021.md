@@ -16,8 +16,8 @@ Tests that already exist and must continue to pass (regression baseline):
 
 | Test File | Description | Status |
 |-----------|-------------|--------|
-| `scripts/__tests__/implementing-plan-phases.test.ts` | SKILL.md frontmatter, sections, allowed-tools, references, validation API | PENDING |
-| `scripts/__tests__/build.test.ts` | Build/validation pipeline including implementing-plan-phases | PENDING |
+| `scripts/__tests__/implementing-plan-phases.test.ts` | SKILL.md frontmatter, sections, allowed-tools, references, assets, validation API | PASS |
+| `scripts/__tests__/build.test.ts` | Build/validation pipeline including implementing-plan-phases | PASS |
 
 ## New Test Analysis
 
@@ -58,9 +58,9 @@ Traceability from acceptance criteria to implementation:
 
 | Deliverable | Expected Path | Exists |
 |-------------|---------------|--------|
-| Updated SKILL.md with PR creation step | `plugins/lwndev-sdlc/skills/implementing-plan-phases/SKILL.md` | YES (to be modified) |
-| New assets directory | `plugins/lwndev-sdlc/skills/implementing-plan-phases/assets/` | NO (to be created) |
-| New PR template | `plugins/lwndev-sdlc/skills/implementing-plan-phases/assets/pr-template.md` | NO (to be created) |
+| Updated SKILL.md with PR creation step | `plugins/lwndev-sdlc/skills/implementing-plan-phases/SKILL.md` | YES |
+| New assets directory | `plugins/lwndev-sdlc/skills/implementing-plan-phases/assets/` | YES |
+| New PR template | `plugins/lwndev-sdlc/skills/implementing-plan-phases/assets/pr-template.md` | YES |
 
 ## Verification Checklist
 

@@ -18,9 +18,11 @@ Enhance the implementing-plan-phases skill to create a pull request after all pl
 
 ## Affected Files
 
-- `plugins/lwndev-sdlc/skills/implementing-plan-phases/SKILL.md` — add PR creation step to the workflow
-- `plugins/lwndev-sdlc/skills/implementing-plan-phases/assets/` — new directory (to be created)
-- `plugins/lwndev-sdlc/skills/implementing-plan-phases/assets/pr-template.md` — new PR template (to be created)
+- `plugins/lwndev-sdlc/skills/implementing-plan-phases/SKILL.md` — added PR creation step to workflow
+- `plugins/lwndev-sdlc/skills/implementing-plan-phases/assets/` — new directory (created)
+- `plugins/lwndev-sdlc/skills/implementing-plan-phases/assets/pr-template.md` — new PR template (created)
+- `plugins/lwndev-sdlc/skills/implementing-plan-phases/references/step-details.md` — added Step 12 details
+- `scripts/__tests__/implementing-plan-phases.test.ts` — added tests for PR template and PR creation step
 
 ## Acceptance Criteria
 
