@@ -40,11 +40,11 @@ Refactor changelog generation in the release script to produce concise, user-fac
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-22
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#61](https://github.com/lwndev/lwndev-marketplace/pull/61)
 
 ## Notes
 
