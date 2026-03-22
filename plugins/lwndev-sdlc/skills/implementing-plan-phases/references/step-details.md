@@ -311,6 +311,33 @@ git push
 
 If the branch was already pushed in a prior phase, a simple `git push` is sufficient.
 
+### Push Failure Recovery
+
+If the push fails, diagnose and resolve before proceeding:
+
+**Network / authentication errors:**
+```bash
+# Verify remote is reachable
+git remote -v
+
+# Retry the push
+git push
+```
+
+If authentication has expired, re-authenticate (e.g., `gh auth login`) and retry.
+
+**Rejected push (remote has new commits):**
+```bash
+# Fetch and rebase onto the latest remote
+git fetch origin
+git rebase origin/<branch-name>
+
+# Resolve any conflicts, then push
+git push
+```
+
+**Important:** Do not proceed to Step 10 (Update Plan Status) until the push succeeds. The commit is local-only until pushed, and subsequent phases or collaborators will not see the work.
+
 ---
 
 ## Step 10: Update Plan Status

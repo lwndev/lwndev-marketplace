@@ -34,6 +34,7 @@ Enhance the `implementing-plan-phases` skill to commit and push changes to the r
 - [ ] All step number references are renumbered consistently across all affected files (current Steps 9-10 become Steps 10-11)
 - [ ] New step includes guidance on staging changed files before committing
 - [ ] Phase completion comment template in github-templates.md references the commit SHA for traceability
+- [ ] Step 9 includes error recovery guidance for push failures (network issues, authentication, rejected pushes)
 
 ## Completion
 
