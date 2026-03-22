@@ -439,7 +439,7 @@ Before creating the PR, verify every phase in the plan shows **Status: ✅ Compl
 
 ```bash
 # Search for any phases that are not complete
-grep -E "^\*\*Status:\*\*" requirements/implementation/<plan-file>.md
+grep "**Status:**" requirements/implementation/<plan-file>.md
 ```
 
 If any phase is still Pending or 🔄 In Progress, complete it before proceeding.

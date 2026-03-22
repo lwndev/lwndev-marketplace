@@ -113,6 +113,7 @@ Before marking a phase complete, verify:
 - Changes committed and pushed to remote
 - Plan status updated with checkmarks
 - GitHub issue updated
+- After all phases: create PR per Step 12
 
 ## References
 

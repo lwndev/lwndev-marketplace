@@ -57,7 +57,7 @@ describe('implementing-plan-phases skill', () => {
     });
 
     it('should include PR creation step after all phases complete', () => {
-      expect(skillMd).toContain('Create pull request');
+      expect(skillMd).toContain('**After all phases complete:** Create pull request');
       expect(skillMd).toContain('Closes #N');
     });
   });
