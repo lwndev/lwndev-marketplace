@@ -159,7 +159,7 @@ Before finishing, verify:
 - [ ] All acceptance criteria from the source document are covered in the test plan
 - [ ] All FR-N (features), RC-N (bugs), or scope items (chores) are mapped to test plan entries
 - [ ] Implementation plan deliverables are covered (for FEAT IDs with implementation plans)
-- [ ] The qa-verifier subagent confirmed plan completeness
+- [ ] The qa-verifier subagent confirmed plan completeness (or verification was skipped with user notification per the transient error guidance)
 - [ ] Test plan is saved to the correct path
 - [ ] Test plan was presented to the user
 

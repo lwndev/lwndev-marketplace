@@ -66,3 +66,4 @@ The skill encounters a "service overloaded" error during qa-verifier execution a
 - Split from [#32](https://github.com/lwndev/lwndev-marketplace/issues/32); original feature is FEAT-004 / [#23](https://github.com/lwndev/lwndev-marketplace/issues/23)
 - The qa-verifier agent (`plugins/lwndev-sdlc/agents/qa-verifier.md`) itself does not need changes — the resilience guidance belongs in the calling skill's instructions
 - The Stop hook uses a Haiku prompt evaluator with no tool access, so it is lightweight; the primary API pressure comes from the main conversation + qa-verifier subagent combination
+- See [#55](https://github.com/lwndev/lwndev-marketplace/issues/55) for the corresponding `executing-qa` issue
