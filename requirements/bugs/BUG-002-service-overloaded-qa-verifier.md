@@ -58,7 +58,7 @@ The skill encounters a "service overloaded" error during qa-verifier execution a
 
 **Completed:** 2026-03-21
 
-**Pull Request:** [#PR](https://github.com/lwndev/lwndev-marketplace/pull/PR)
+**Pull Request:** [#56](https://github.com/lwndev/lwndev-marketplace/pull/56)
 
 ## Notes
 
