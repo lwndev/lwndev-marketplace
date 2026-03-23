@@ -31,7 +31,7 @@ Validate requirement documents against the codebase and documentation. Operates 
 2. Resolve to a file path if an ID was given
 3. **Detect mode**: Check if a QA test plan exists at `qa/test-plans/QA-plan-{ID}.md`
 4. **If no test plan** → Standard review: Parse document, run Steps 3-7, present findings, offer fixes
-5. **If test plan exists** → Test-plan reconciliation: Run reconciliation Steps R1-R5, present findings, offer suggestions
+5. **If test plan exists** → Test-plan reconciliation: Run reconciliation Steps R1-R7
 
 ## Input
 
