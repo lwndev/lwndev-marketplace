@@ -21,6 +21,7 @@ Add a lightweight `finalizing-workflow` skill to the lwndev-sdlc plugin that mer
 - `plugins/lwndev-sdlc/skills/finalizing-workflow/SKILL.md` (new)
 - `plugins/lwndev-sdlc/README.md`
 - `CLAUDE.md`
+- `scripts/__tests__/build.test.ts` (skill count 10→11)
 - `package-lock.json` (audit fix)
 - `.husky/pre-commit` (audit-level threshold)
 
@@ -49,5 +50,5 @@ Add a lightweight `finalizing-workflow` skill to the lwndev-sdlc plugin that mer
 
 - This is the terminal step in all three SDLC workflow chains (features, chores, bugs)
 - The skill prompt should be minimal since it's a deterministic sequence
-- Merge strategy (merge commit, squash, rebase) should use repo defaults unless made configurable
-- Skill should confirm intent before executing the merge
+- Merge strategy uses repo defaults (no `--merge`/`--squash`/`--rebase` flag); `--delete-branch` cleans up after merge
+- Skill confirms intent before executing the merge
