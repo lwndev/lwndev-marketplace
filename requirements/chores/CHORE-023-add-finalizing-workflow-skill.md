@@ -39,11 +39,11 @@ Add a lightweight `finalizing-workflow` skill to the lwndev-sdlc plugin that mer
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-26
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#72](https://github.com/lwndev/lwndev-marketplace/pull/72)
 
 ## Notes
 
