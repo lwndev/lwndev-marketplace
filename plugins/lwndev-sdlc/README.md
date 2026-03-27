@@ -18,6 +18,7 @@ SDLC workflow skills for Claude Code — documenting, planning, and executing fe
 | **executing-bug-fixes** | Executes bug fix workflows from branch creation through pull request with root cause driven execution |
 | **documenting-qa** | Builds a QA test plan from requirements documents with completeness verification via ralph loop |
 | **executing-qa** | Executes QA verification and documentation reconciliation from a test plan |
+| **finalizing-workflow** | Merges the current PR, checks out main, fetches, and pulls — the terminal step in all workflow chains |
 
 ## Agents
 
@@ -72,12 +73,13 @@ Skills are invoked as slash commands, namespaced under the plugin:
 /lwndev-sdlc:executing-bug-fixes
 /lwndev-sdlc:documenting-qa
 /lwndev-sdlc:executing-qa
+/lwndev-sdlc:finalizing-workflow
 ```
 
 ## Workflow Chains
 
 The skills form three workflow chains:
 
-1. **Features**: `documenting-features` → `reviewing-requirements` → `documenting-qa` → `creating-implementation-plans` → `implementing-plan-phases` → `executing-qa`
-2. **Chores**: `documenting-chores` → `reviewing-requirements` → `documenting-qa` → `executing-chores` → `executing-qa`
-3. **Bugs**: `documenting-bugs` → `reviewing-requirements` → `documenting-qa` → `executing-bug-fixes` → `executing-qa`
+1. **Features**: `documenting-features` → `reviewing-requirements` → `documenting-qa` → `creating-implementation-plans` → `implementing-plan-phases` → `executing-qa` → `finalizing-workflow`
+2. **Chores**: `documenting-chores` → `reviewing-requirements` → `documenting-qa` → `executing-chores` → `executing-qa` → `finalizing-workflow`
+3. **Bugs**: `documenting-bugs` → `reviewing-requirements` → `documenting-qa` → `executing-bug-fixes` → `executing-qa` → `finalizing-workflow`
