@@ -44,11 +44,11 @@ Update the "Relationship to Other Skills" sections in all affected skill SKILL.m
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-28
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#85](https://github.com/lwndev/lwndev-marketplace/pull/85)
 
 ## Notes
 
