@@ -9,6 +9,7 @@ allowed-tools:
   - Glob
   - Grep
   - Agent
+argument-hint: "<plan-file> [phase-number]"
 ---
 
 # Implementing Plan Phases
@@ -20,6 +21,11 @@ Execute implementation plan phases with systematic tracking and verification.
 - User says "run phase workflow", "execute phase workflow", or "start phase N workflow"
 - User asks to implement from an implementation plan document
 - References files in `requirements/implementation/`
+
+## Arguments
+
+- **When argument is provided**: Parse the argument as `<plan-file> [phase-number]`. Match the first part against files in `requirements/implementation/` by ID prefix (e.g., `FEAT-001` matches `FEAT-001-podcast-cli-features.md`). If a phase number is provided (e.g., `FEAT-001 3`), target that specific phase. If the phase number exceeds the plan's phase count, display available phases and ask the user to choose. If no match is found for the plan file, inform the user and fall back to interactive selection.
+- **When no argument is provided**: Scan `requirements/implementation/` for plan documents and prompt the user to select one. Then identify the next pending phase automatically.
 
 ## Quick Start
 
