@@ -15,6 +15,7 @@ hooks:
         - type: prompt
           prompt: "You are evaluating whether Claude should stop. Context: $ARGUMENTS\n\nA prompt hook is a single-turn LLM call with no tool access — you can only evaluate based on the input fields provided, not by reading files.\n\nIf stop_hook_active is true in the input, respond {\"ok\": true} immediately to prevent infinite loops.\n\nOtherwise, examine last_assistant_message to determine the current phase:\n(1) If QA verification is in progress: does Claude's message indicate the qa-verifier returned a clean pass verdict with no remaining issues?\n(2) If verification passed and documentation reconciliation is in progress: does Claude's message indicate all reconciliation areas are covered (affected files updated, acceptance criteria modifications documented, implementation steps updated, deviation summary added where needed)?\n\nRespond {\"ok\": true} if the current phase is complete based on Claude's message, or {\"ok\": false, \"reason\": \"what appears to remain\"} if not."
           model: haiku
+argument-hint: <requirement-id>
 ---
 
 # Executing QA
@@ -27,6 +28,11 @@ Execute QA verification against a test plan, then reconcile requirements documen
 - User wants to validate a PR against its requirements
 - After implementation is complete and `documenting-qa` has produced a test plan
 - Before merging — as a final QA gate
+
+## Arguments
+
+- **When argument is provided**: Match the argument against requirement IDs by prefix. Search across `requirements/features/`, `requirements/chores/`, and `requirements/bugs/` for a matching document (e.g., `FEAT-008` matches `FEAT-008-skill-argument-hints.md`). Then load the corresponding test plan from `qa/test-plans/QA-plan-{id}.md`. If no match is found, inform the user and fall back to interactive selection.
+- **When no argument is provided**: Ask the user for a requirement ID.
 
 ## Quick Start
 

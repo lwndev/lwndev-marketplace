@@ -9,6 +9,7 @@ allowed-tools:
   - Glob
   - Grep
   - Agent
+argument-hint: <bug-id>
 ---
 
 # Executing Bug Fixes
@@ -21,6 +22,11 @@ Execute bug fix workflows with root cause driven execution from branch creation 
 - User references a bug document in `requirements/bugs/`
 - User wants to implement a documented bug fix
 - Continuing bug fix work that was previously started
+
+## Arguments
+
+- **When argument is provided**: Match the argument against files in `requirements/bugs/` by ID prefix (e.g., `BUG-003` matches `BUG-003-login-timeout-error.md`). If no match is found, inform the user and fall back to interactive selection. If multiple matches are found, present the options and ask the user to choose.
+- **When no argument is provided**: Scan `requirements/bugs/` for bug documents and prompt the user to select one if multiple exist.
 
 ## Quick Start
 

@@ -9,6 +9,7 @@ allowed-tools:
   - Glob
   - Grep
   - Agent
+argument-hint: <chore-id>
 ---
 
 # Executing Chores
@@ -21,6 +22,11 @@ Execute chore task workflows with systematic tracking from branch creation throu
 - User references a chore document in `requirements/chores/`
 - User wants to implement documented maintenance work
 - Continuing chore work that was previously started
+
+## Arguments
+
+- **When argument is provided**: Match the argument against files in `requirements/chores/` by ID prefix (e.g., `CHORE-007` matches `CHORE-007-migrate-config.md`). If no match is found, inform the user and fall back to interactive selection. If multiple matches are found, present the options and ask the user to choose.
+- **When no argument is provided**: Scan `requirements/chores/` for chore documents and prompt the user to select one if multiple exist.
 
 ## Quick Start
 
