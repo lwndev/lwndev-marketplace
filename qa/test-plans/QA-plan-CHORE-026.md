@@ -16,17 +16,17 @@ Tests that already exist and must continue to pass (regression baseline):
 
 | Test File | Description | Status |
 |-----------|-------------|--------|
-| `scripts/__tests__/build.test.ts` | Validates SKILL.md exists in each skill directory and frontmatter parses correctly | PENDING |
-| `scripts/__tests__/skill-utils.test.ts` | Validates SKILL.md frontmatter parsing | PENDING |
-| `scripts/__tests__/scaffold.test.ts` | Scaffold creates valid skill structure | PENDING |
-| `scripts/__tests__/reviewing-requirements.test.ts` | Asserts `## Relationship to Other Skills` section exists in reviewing-requirements SKILL.md | PENDING |
-| `scripts/__tests__/documenting-qa.test.ts` | Asserts `## Relationship to Other Skills` section exists in documenting-qa SKILL.md | PENDING |
-| `scripts/__tests__/executing-qa.test.ts` | Asserts `## Relationship to Other Skills` section exists in executing-qa SKILL.md | PENDING |
-| `scripts/__tests__/documenting-features.test.ts` | Asserts `## Relationship to Other Skills` section exists in documenting-features SKILL.md | PENDING |
-| `scripts/__tests__/documenting-chores.test.ts` | Asserts `## Relationship to Other Skills` section exists in documenting-chores SKILL.md | PENDING |
-| `scripts/__tests__/documenting-bugs.test.ts` | Asserts `## Relationship to Other Skills` section exists in documenting-bugs SKILL.md | PENDING |
-| `scripts/__tests__/executing-chores.test.ts` | Asserts `## Relationship to Other Skills` section exists in executing-chores SKILL.md | PENDING |
-| `scripts/__tests__/executing-bug-fixes.test.ts` | Asserts `## Relationship to Other Skills` section exists in executing-bug-fixes SKILL.md | PENDING |
+| `scripts/__tests__/build.test.ts` | Validates SKILL.md exists in each skill directory and frontmatter parses correctly | PASS |
+| `scripts/__tests__/skill-utils.test.ts` | Validates SKILL.md frontmatter parsing | PASS |
+| `scripts/__tests__/scaffold.test.ts` | Scaffold creates valid skill structure | PASS |
+| `scripts/__tests__/reviewing-requirements.test.ts` | Asserts `## Relationship to Other Skills` section exists in reviewing-requirements SKILL.md | PASS |
+| `scripts/__tests__/documenting-qa.test.ts` | Asserts `## Relationship to Other Skills` section exists in documenting-qa SKILL.md | PASS |
+| `scripts/__tests__/executing-qa.test.ts` | Asserts `## Relationship to Other Skills` section exists in executing-qa SKILL.md | PASS |
+| `scripts/__tests__/documenting-features.test.ts` | Asserts `## Relationship to Other Skills` section exists in documenting-features SKILL.md | PASS |
+| `scripts/__tests__/documenting-chores.test.ts` | Asserts `## Relationship to Other Skills` section exists in documenting-chores SKILL.md | PASS |
+| `scripts/__tests__/documenting-bugs.test.ts` | Asserts `## Relationship to Other Skills` section exists in documenting-bugs SKILL.md | PASS |
+| `scripts/__tests__/executing-chores.test.ts` | Asserts `## Relationship to Other Skills` section exists in executing-chores SKILL.md | PASS |
+| `scripts/__tests__/executing-bug-fixes.test.ts` | Asserts `## Relationship to Other Skills` section exists in executing-bug-fixes SKILL.md | PASS |
 
 ## New Test Analysis
 
@@ -64,17 +64,17 @@ Traceability from acceptance criteria to implementation:
 
 | Deliverable | Source | Expected Path | Exists |
 |-------------|--------|---------------|--------|
-| Updated reviewing-requirements SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/reviewing-requirements/SKILL.md` | PENDING |
-| Updated documenting-qa SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/documenting-qa/SKILL.md` | PENDING |
-| Updated executing-qa SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md` | PENDING |
-| Updated documenting-features SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/documenting-features/SKILL.md` | PENDING |
-| Updated documenting-chores SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/documenting-chores/SKILL.md` | PENDING |
-| Updated documenting-bugs SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/documenting-bugs/SKILL.md` | PENDING |
-| Updated executing-chores SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/executing-chores/SKILL.md` | PENDING |
-| Updated executing-bug-fixes SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/executing-bug-fixes/SKILL.md` | PENDING |
-| Updated finalizing-workflow SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/finalizing-workflow/SKILL.md` | PENDING |
-| Updated plugin README.md | AC-7 | `plugins/lwndev-sdlc/README.md` | PENDING |
-| Updated CLAUDE.md | AC-6 | `CLAUDE.md` | PENDING |
+| Updated reviewing-requirements SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/reviewing-requirements/SKILL.md` | PASS |
+| Updated documenting-qa SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/documenting-qa/SKILL.md` | PASS |
+| Updated executing-qa SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md` | PASS |
+| Updated documenting-features SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/documenting-features/SKILL.md` | PASS |
+| Updated documenting-chores SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/documenting-chores/SKILL.md` | PASS |
+| Updated documenting-bugs SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/documenting-bugs/SKILL.md` | PASS |
+| Updated executing-chores SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/executing-chores/SKILL.md` | PASS |
+| Updated executing-bug-fixes SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/executing-bug-fixes/SKILL.md` | PASS |
+| Updated finalizing-workflow SKILL.md | AC-1 | `plugins/lwndev-sdlc/skills/finalizing-workflow/SKILL.md` | PASS |
+| Updated plugin README.md | AC-7 | `plugins/lwndev-sdlc/README.md` | PASS |
+| Updated CLAUDE.md | AC-6 | `CLAUDE.md` | PASS |
 
 ## Verification Checklist
 
