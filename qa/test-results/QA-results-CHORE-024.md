@@ -27,12 +27,12 @@
 
 | Gap | Affected Code | Status |
 |-----|--------------|--------|
-| `getDefaultBranch()` with remote HEAD set | `scripts/lib/git-utils.ts:getDefaultBranch` | Open (low priority — fallback path exercised by branching tests) |
-| Non-"already exists" branch creation failure | `scripts/release.ts:316-318` | Open (low priority — difficult to trigger in practice) |
+| `getDefaultBranch()` with remote HEAD set | `scripts/lib/git-utils.ts:getDefaultBranch` | Accepted — fallback path exercised by branching tests; remote path is low risk |
+| Non-"already exists" branch creation failure | `scripts/release.ts:316-318` | Accepted — difficult to trigger in practice; generic stderr surfaced if hit |
 
 ### Gaps Resolved
 
-No gaps required resolution — all high-priority paths are covered by the 3 new branching tests.
+No gaps required resolution. Two low-priority gaps were identified and accepted without dedicated tests (see above).
 
 ## Code Path Verification Results
 
