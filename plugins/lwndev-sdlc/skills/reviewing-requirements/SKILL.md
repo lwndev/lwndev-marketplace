@@ -84,13 +84,14 @@ After resolving the requirement document, detect the mode in this order:
 3. **Check for a test plan** (test-plan reconciliation):
    - Use Glob to check for `qa/test-plans/QA-plan-{ID}.md`
    - If found → Enter **test-plan reconciliation mode**. Proceed to [Test-Plan Reconciliation Mode](#test-plan-reconciliation-mode).
-4. **Default** → Continue with **standard review** (Steps 2-9 below). If no PR was detected via branch naming, display: "No PR detected via branch naming convention. Use `--pr <number>` to specify a PR."
+4. **Default** → Continue with **standard review** (Steps 2-9 below).
 
 **Precedence**: If both a PR and a test plan exist, code-review reconciliation takes precedence (it is the later workflow step).
 
 Display the detected mode:
 ```
 Detected mode: Standard review (no test plan or PR found for {ID})
+Hint: To run code-review reconciliation, use --pr <number> if a PR exists but branch naming doesn't match.
 ```
 ```
 Detected mode: Test-plan reconciliation (found qa/test-plans/QA-plan-{ID}.md)
