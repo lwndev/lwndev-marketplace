@@ -262,6 +262,58 @@ Use the same format as Step 8 with categories: Cross-Reference Consistency (R2),
 
 Offer to apply clear corrections: backport candidates to Edge Cases/Acceptance Criteria, missing traceability references. Not auto-fixable: contradictions (design decisions), GitHub issue comments (user judgment), implementation plan changes (scope impact). Follow the same fix workflow as Step 9.
 
+## Code-Review Reconciliation Mode
+
+When a PR exists for the requirement ID, produce an advisory drift report. This mode covers areas that `executing-qa`'s reconciliation loop does not: test plan staleness, GitHub issue updates, and a preview of requirements-to-code drift.
+
+**Scope boundary**: This mode is entirely advisory. It does NOT update affected files lists, modify implementation plan phases/deliverables/status, add deviation summaries, or auto-fix requirements documents. Those are handled by `executing-qa` reconciliation.
+
+### Step CR1: Load PR Context
+
+Fetch the PR diff using `gh pr diff <number>`. If `gh` is unavailable, fall back to `git diff <base-branch>...HEAD`. Load the requirement document (already resolved in Step 1). Load the test plan from `qa/test-plans/QA-plan-{ID}.md` if it exists — if not, skip CR2 and note as **Info** ("No test plan found; test plan staleness detection skipped"). If the PR diff is very large (> 100 changed files), warn the user and focus on files referenced in requirements and test plan.
+
+### Step CR2: Test Plan Staleness Detection
+
+Compare test plan entries (Code Path Verification, New Test Analysis, Coverage Gap Analysis) against the PR diff. Flag entries referencing:
+- **Changed function signatures or APIs** — parameter changes, renames, modified return types visible in the diff
+- **Removed or renamed files** — test entries referencing files deleted or renamed in the PR
+- **Modified behavior** — test entries whose "Expected Code Path" or "Description" describes behavior the diff alters
+
+For each flagged entry, describe specifically what changed in the PR diff and how it affects the test plan entry. Classify: **Error** for entries that will definitely fail; **Warning** for entries that may verify the wrong thing.
+
+### Step CR3: GitHub Issue Suggestions
+
+Compare the PR diff and requirement document against the linked GitHub issue (from the requirement's "GitHub Issue" field). If no GitHub issue is linked, skip and note as **Info**. Produce draft suggestions for:
+- **Scope changes** — behavior added or removed that differs from the original issue
+- **Decisions made during review** — design choices or trade-offs resolved during code review
+- **Deferred work** — items intentionally deferred to follow-up issues
+
+Each suggestion includes a draft comment for user review. Never post or modify the issue directly.
+
+### Step CR4: Advisory Requirements Drift Summary
+
+Compare the PR diff against FR-N entries, acceptance criteria, and edge cases. Identify:
+- FRs describing behavior not present in the diff (potentially unimplemented or changed)
+- Diff changes introducing behavior not described in any FR (potentially undocumented)
+- Acceptance criteria that may not hold given the actual implementation
+
+Present as advisory only. Note that `executing-qa` reconciliation will handle actual document updates. Classify: **Warning** for drift findings; **Info** for minor discrepancies.
+
+### Step CR5: Present Findings
+
+Use the same severity classification and finding format as Step 8, with these categories:
+
+1. **Test Plan Staleness** (CR2) — entries that may fail or verify the wrong thing
+2. **GitHub Issue Suggestions** (CR3) — recommended issue updates
+3. **Requirements ↔ Code Drift** (CR4) — advisory divergence preview
+
+Display a summary count:
+```
+Code-review reconciliation for {ID} (PR #{N}): Found **N errors**, **N warnings**, **N info**
+```
+
+For findings that relate to `executing-qa`'s scope, note: "This drift will be addressed by `executing-qa` reconciliation."
+
 ## Document Type Adaptations
 
 | Type | Adaptation |
@@ -303,22 +355,28 @@ Before finishing a reconciliation review, verify:
 - [ ] Summary count is accurate
 - [ ] Update suggestions are offered where applicable
 
+### Code-Review Reconciliation
+
+Before finishing a code-review reconciliation, verify:
+
+- [ ] PR detected and mode entered correctly (or `--pr` flag used)
+- [ ] PR diff loaded (or `git diff` fallback used if `gh` unavailable)
+- [ ] Test plan entries compared against PR diff (or skip noted if no test plan)
+- [ ] GitHub issue suggestions produced (or skip noted if no issue linked)
+- [ ] Advisory drift summary presented (no auto-fixes applied)
+- [ ] Scope boundary respected (no `executing-qa` work duplicated)
+- [ ] Findings organized by category with correct severity classification
+- [ ] Summary count is accurate
+
 ## Relationship to Other Skills
 
-This skill appears in two positions in each workflow chain — once before QA planning (standard review) and optionally again after QA planning (test-plan reconciliation):
+This skill appears at multiple points in each workflow chain. The mode is automatic: PR exists → code-review reconciliation; test plan exists (no PR) → test-plan reconciliation; otherwise → standard review.
 
 ```
-Features: documenting-features → reviewing-requirements → documenting-qa → reviewing-requirements → creating-implementation-plans → implementing-plan-phases → executing-qa
-                                  (standard review)                          (reconciliation)
-
-Chores:   documenting-chores → reviewing-requirements → documenting-qa → reviewing-requirements → executing-chores → executing-qa
-                                (standard review)                          (reconciliation)
-
-Bugs:     documenting-bugs → reviewing-requirements → documenting-qa → reviewing-requirements → executing-bug-fixes → executing-qa
-                              (standard review)                          (reconciliation)
+Pre-QA:   documenting-* → reviewing-requirements (standard review) → documenting-qa
+Post-QA:  documenting-qa → reviewing-requirements (test-plan reconciliation) → creating-implementation-plans / executing-*
+Post-PR:  PR review → reviewing-requirements (code-review reconciliation) → executing-qa
 ```
-
-The mode is automatic: if a test plan exists when invoked, it runs reconciliation; otherwise, it runs standard review.
 
 | Task | Recommended Approach |
 |------|---------------------|
@@ -326,6 +384,7 @@ The mode is automatic: if a test plan exists when invoked, it runs reconciliatio
 | **Review requirements (before QA)** | **Use this skill — standard review mode** |
 | Build QA test plan | Use `documenting-qa` |
 | **Review requirements (after QA)** | **Use this skill — test-plan reconciliation mode** |
+| **Review requirements (after PR review)** | **Use this skill — code-review reconciliation mode** |
 | Create implementation plan | Use `creating-implementation-plans` |
 | Implement the plan | Use `implementing-plan-phases` |
 | Execute chore or bug fix | Use `executing-chores` or `executing-bug-fixes` |

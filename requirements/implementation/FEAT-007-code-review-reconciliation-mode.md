@@ -14,7 +14,7 @@ Add a third operating mode to the `reviewing-requirements` skill that detects wh
 
 ### Phase 1: Token Budget Management and Mode Detection
 **Feature:** [FEAT-007](../features/FEAT-007-code-review-reconciliation-mode.md) | [#66](https://github.com/lwndev/lwndev-marketplace/issues/66)
-**Status:** 🔄 In Progress
+**Status:** ✅ Complete
 
 #### Rationale
 - The SKILL.md is currently ~5780 tokens (per #66 comment). The target ceiling is ~6500 tokens. Adding a full third mode requires ~1500-2000 tokens of new content, meaning ~800-1300 tokens must be trimmed from existing content first.
@@ -67,7 +67,7 @@ Add a third operating mode to the `reviewing-requirements` skill that detects wh
 ### Phase 2: Code-Review Reconciliation Steps and Metadata
 **Feature:** [FEAT-007](../features/FEAT-007-code-review-reconciliation-mode.md) | [#66](https://github.com/lwndev/lwndev-marketplace/issues/66)
 **Depends on:** Phase 1
-**Status:** Pending
+**Status:** ✅ Complete
 
 #### Rationale
 - With token headroom established in Phase 1, the new mode's steps can be added.
@@ -123,11 +123,11 @@ Add a third operating mode to the `reviewing-requirements` skill that detects wh
 8. **Run `npm run validate`** — ensure the updated SKILL.md passes `ai-skills-manager` validation.
 
 #### Deliverables
-- [ ] `plugins/lwndev-sdlc/skills/reviewing-requirements/SKILL.md` — code-review reconciliation mode (steps CR1-CR4, scope boundary, findings presentation)
-- [ ] Updated Verification Checklist with code-review reconciliation items
-- [ ] Updated "Relationship to Other Skills" section with new workflow position
-- [ ] Final token count under ~6500 tokens (documented in commit message)
-- [ ] `npm run validate` passes
+- [x] `plugins/lwndev-sdlc/skills/reviewing-requirements/SKILL.md` — code-review reconciliation mode (steps CR1-CR5, scope boundary, findings presentation)
+- [x] Updated Verification Checklist with code-review reconciliation items (8 checklist items)
+- [x] Updated "Relationship to Other Skills" section with new workflow position and mode table entry
+- [x] Final token count: 3158 words (~4105 tokens) — under ~6500 ceiling
+- [x] `npm run validate` passes (11/11 skills, 19/19 checks)
 
 ---
 
