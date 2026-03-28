@@ -32,8 +32,8 @@ function runRelease(args: string, cwd: string): { stdout: string; exitCode: numb
 async function createTestRepo(): Promise<string> {
   const dir = await mkdtemp(join(tmpdir(), 'release-test-'));
 
-  // Init git repo
-  execSync('git init', { cwd: dir, env: cleanEnv, stdio: 'pipe' });
+  // Init git repo with explicit main branch
+  execSync('git init -b main', { cwd: dir, env: cleanEnv, stdio: 'pipe' });
   execSync('git config user.email "test@test.com"', { cwd: dir, env: cleanEnv, stdio: 'pipe' });
   execSync('git config user.name "Test"', { cwd: dir, env: cleanEnv, stdio: 'pipe' });
 
@@ -474,5 +474,61 @@ describe('release script error handling', () => {
     const { stdout, exitCode } = runRelease('--bump patch', testDir);
     expect(exitCode).toBe(1);
     expect(stdout).toContain('Plugin "test-plugin" not found in marketplace.json');
+  });
+});
+
+describe('release script branching', () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTestRepo();
+  });
+
+  afterEach(async () => {
+    await rm(testDir, { recursive: true, force: true });
+  });
+
+  it('should create release branch when run from main', () => {
+    const { stdout, exitCode } = runRelease('--bump patch', testDir);
+    expect(exitCode).toBe(0);
+    expect(stdout).toContain('Created branch: release/test-plugin-v1.0.1');
+
+    // Verify we're on the release branch
+    const branch = execSync('git rev-parse --abbrev-ref HEAD', {
+      cwd: testDir,
+      env: cleanEnv,
+      encoding: 'utf-8',
+    }).trim();
+    expect(branch).toBe('release/test-plugin-v1.0.1');
+  });
+
+  it('should error when release branch already exists', () => {
+    // Pre-create the release branch
+    execSync('git branch release/test-plugin-v1.0.1', {
+      cwd: testDir,
+      env: cleanEnv,
+      stdio: 'pipe',
+    });
+
+    const { stdout, exitCode } = runRelease('--bump patch', testDir);
+    expect(exitCode).toBe(1);
+    expect(stdout).toContain('Branch "release/test-plugin-v1.0.1" already exists');
+  });
+
+  it('should commit in place when not on main', () => {
+    // Switch to a feature branch
+    execSync('git checkout -b feature/test', { cwd: testDir, env: cleanEnv, stdio: 'pipe' });
+
+    const { stdout, exitCode } = runRelease('--bump patch', testDir);
+    expect(exitCode).toBe(0);
+    expect(stdout).not.toContain('Created branch');
+
+    // Verify we're still on the feature branch
+    const branch = execSync('git rev-parse --abbrev-ref HEAD', {
+      cwd: testDir,
+      env: cleanEnv,
+      encoding: 'utf-8',
+    }).trim();
+    expect(branch).toBe('feature/test');
   });
 });

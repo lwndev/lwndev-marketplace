@@ -15,6 +15,7 @@ import {
 } from './lib/plugin-manifest.js';
 import {
   isWorkingTreeClean,
+  getCurrentBranch,
   getLatestTagForPlugin,
   getCommitsSinceTag,
   filterNoiseCommits,
@@ -296,6 +297,22 @@ async function main(): Promise<void> {
 
   // Compute new version
   const newVersion = computeNewVersion(currentVersion, versionArg);
+
+  // Create release branch if on main
+  const currentBranch = getCurrentBranch();
+  const releaseBranch = `release/${pluginName}-v${newVersion}`;
+
+  if (currentBranch === 'main') {
+    try {
+      execSync(`git checkout -b "${releaseBranch}"`, { stdio: 'pipe' });
+    } catch {
+      printError(
+        `Branch "${releaseBranch}" already exists. Delete it first or switch to it manually.`
+      );
+      process.exit(1);
+    }
+    printSuccess(`Created branch: ${releaseBranch}`);
+  }
 
   // Verify plugin exists in marketplace
   const marketplace = await readMarketplaceManifest();
