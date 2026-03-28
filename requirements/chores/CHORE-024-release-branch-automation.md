@@ -32,11 +32,11 @@ The release script (`npm run release`) commits directly to whatever branch is cu
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `Completed`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-28
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#81](https://github.com/lwndev/lwndev-marketplace/pull/81)
 
 ## Notes
 
