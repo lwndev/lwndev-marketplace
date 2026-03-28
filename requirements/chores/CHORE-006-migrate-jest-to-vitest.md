@@ -63,5 +63,6 @@ Migrate the test framework from Jest (v30 + ts-jest) to Vitest for native ESM an
 
 - No mocks or spies are used in the test suite, making this a straightforward migration
 - `it.each()` is used in 3 instances; Vitest supports the same API
-- Sequential execution must be preserved to prevent race conditions with shared `plugins/` directories. The current Jest config uses `maxWorkers: 1`; the Vitest equivalent should be validated during implementation (e.g., `pool: 'forks'` with `poolOptions.forks.singleFork: true`, or `fileParallelism: false`)
-- All test imports need `import { describe, it, expect, ... } from 'vitest'` added since Jest uses globals
+- Sequential execution preserved via `fileParallelism: false` in `vitest.config.ts`
+- All test imports updated with explicit `import { describe, it, expect, ... } from 'vitest'`
+- **Deviation:** `release.test.ts` and `release-tag.test.ts` received an additional `cleanEnv` fix to strip `GIT_*` env vars from child `execSync` calls, preventing failures when tests run inside a pre-commit hook that sets `GIT_DIR`/`GIT_INDEX_FILE`. This is a compatibility fix, not a logic change.
