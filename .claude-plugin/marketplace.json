@@ -3,12 +3,5 @@
   "owner": {
     "name": "test"
   },
-  "plugins": [
-    {
-      "name": "test-plugin",
-      "source": "./plugins/test-plugin",
-      "description": "A test plugin",
-      "version": "1.0.0"
-    }
-  ]
+  "plugins": []
 }
