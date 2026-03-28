@@ -54,6 +54,8 @@ Test plan entries are never directly verified. The entire loop operates through 
 - `plugins/lwndev-sdlc/agents/qa-verifier.md`
 - `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md`
 - `plugins/lwndev-sdlc/skills/executing-qa/assets/test-results-template.md`
+- `scripts/__tests__/qa-verifier.test.ts`
+- `scripts/__tests__/executing-qa.test.ts`
 
 ## Acceptance Criteria
 
@@ -70,6 +72,10 @@ Test plan entries are never directly verified. The entire loop operates through 
 **Completed:** 2026-03-28
 
 **Pull Request:** [#79](https://github.com/lwndev/lwndev-marketplace/pull/79)
+
+## Deviation Summary
+
+Test files `scripts/__tests__/qa-verifier.test.ts` and `scripts/__tests__/executing-qa.test.ts` were updated to validate the new direct-verification behavior. Five assertions that tested the old coverage-audit patterns were replaced with assertions for the new patterns. These files were not listed in the original affected files since the bug document focused on the skill/agent definitions, but updating them was a natural consequence of the behavioral change.
 
 ## Notes
 
