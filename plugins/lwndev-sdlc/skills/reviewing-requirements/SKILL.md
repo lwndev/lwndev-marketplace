@@ -1,6 +1,6 @@
 ---
 name: reviewing-requirements
-description: Validates requirement documents against the codebase and docs. Operates in two modes - standard review (before QA planning) and test-plan reconciliation (after QA planning). Use when the user says "review requirements", "validate requirements", "check requirements", or wants to verify a requirement document.
+description: Validates requirement documents against the codebase and docs. Operates in three modes - standard review (before QA), test-plan reconciliation (after QA), and code-review reconciliation (after PR review). Use when the user says "review requirements", "validate requirements", "check requirements", or wants to verify a requirement document.
 allowed-tools:
   - Read
   - Write
@@ -13,10 +13,11 @@ allowed-tools:
 
 # Reviewing Requirements
 
-Validate requirement documents against the codebase and documentation. Operates in two modes depending on whether a QA test plan exists for the requirement:
+Validate requirement documents against the codebase and documentation. Operates in three modes:
 
 - **Standard review** — validates requirements before QA planning begins (the default)
 - **Test-plan reconciliation** — validates bidirectional consistency between the QA test plan and upstream artifacts after QA planning
+- **Code-review reconciliation** — advisory drift report after a PR has been reviewed, covering test plan staleness, GitHub issue updates, and requirements drift
 
 ## When to Use This Skill
 
@@ -24,14 +25,16 @@ Validate requirement documents against the codebase and documentation. Operates 
 - User provides a requirement document path or ID for review
 - **Standard review**: After a `documenting-*` skill has produced a requirement document, before `documenting-qa`
 - **Test-plan reconciliation**: After `documenting-qa` has produced a test plan, before execution (`implementing-plan-phases`, `executing-chores`, `executing-bug-fixes`)
+- **Code-review reconciliation**: After a PR has been reviewed and its findings addressed, before `executing-qa`
 
 ## Quick Start
 
-1. Accept a requirement document path or ID
+1. Accept a requirement document path or ID (supports `--pr <number>` flag for code-review reconciliation)
 2. Resolve to a file path if an ID was given
-3. **Detect mode**: Check if a QA test plan exists at `qa/test-plans/QA-plan-{ID}.md`
-4. **If no test plan** → Standard review: Parse document, run Steps 3-7, present findings, offer fixes
-5. **If test plan exists** → Test-plan reconciliation: Run reconciliation Steps R1-R7
+3. **Detect mode**: Check for PR → test plan → default to standard review
+4. **If PR exists** → Code-review reconciliation: Run Steps CR1-CR5 (advisory drift report)
+5. **If test plan exists (no PR)** → Test-plan reconciliation: Run Steps R1-R7
+6. **If neither** → Standard review: Parse document, run Steps 3-7, present findings, offer fixes
 
 ## Input
 
@@ -39,6 +42,8 @@ The user provides either:
 
 - **A file path**: `requirements/features/FEAT-006-reviewing-requirements-skill.md`
 - **A requirement ID**: `FEAT-006`, `CHORE-003`, `BUG-001`
+
+An optional `--pr <number>` flag can be appended to force code-review reconciliation mode with a specific PR (e.g., `/reviewing-requirements FEAT-007 --pr 85`).
 
 If no input is provided, ask the user for a document path or requirement ID.
 
@@ -68,23 +73,39 @@ Searched: requirements/features/, requirements/implementation/
 
 ## Step 1.5: Detect Review Mode
 
-After resolving the requirement document, check whether a QA test plan exists:
+After resolving the requirement document, detect the mode in this order:
 
-1. Extract the requirement ID from the resolved document (e.g., `FEAT-006`, `CHORE-022`, `BUG-001`)
-2. Use Glob to check for `qa/test-plans/QA-plan-{ID}.md` (e.g., `qa/test-plans/QA-plan-CHORE-022.md`)
+1. Extract the requirement ID (e.g., `FEAT-006`, `CHORE-022`, `BUG-001`)
+2. **Check for a PR** (code-review reconciliation):
+   - If `--pr <number>` was provided, use `gh pr view <number>` to load that PR. If the PR doesn't exist or the value is non-numeric, display an error and fall back to branch-based detection.
+   - Otherwise, run `gh pr list --head <pattern> --json number,headRefName,state,isDraft` for patterns `feat/{ID}-*`, `chore/{ID}-*`, `fix/{ID}-*` (case-insensitive on the ID portion).
+   - If multiple PRs match, use the most recently updated open PR. If no open PRs exist, list all matches and ask the user to specify.
+   - If a PR is found → Enter **code-review reconciliation mode**. Proceed to [Code-Review Reconciliation Mode](#code-review-reconciliation-mode).
+3. **Check for a test plan** (test-plan reconciliation):
+   - Use Glob to check for `qa/test-plans/QA-plan-{ID}.md`
+   - If found → Enter **test-plan reconciliation mode**. Proceed to [Test-Plan Reconciliation Mode](#test-plan-reconciliation-mode).
+4. **Default** → Continue with **standard review** (Steps 2-9 below).
 
-**If a test plan exists** → Enter **test-plan reconciliation mode**. Skip Steps 2-9 and proceed to [Test-Plan Reconciliation Mode](#test-plan-reconciliation-mode).
+**Precedence**: If both a PR and a test plan exist, code-review reconciliation takes precedence (it is the later workflow step).
 
-**If no test plan exists** → Continue with **standard review** (Steps 2-9 below).
-
-Display the detected mode to the user:
+Display the detected mode:
 ```
-Detected mode: Standard review (no test plan found for {ID})
+Detected mode: Standard review (no test plan or PR found for {ID})
+Hint: To run code-review reconciliation, use --pr <number> if a PR exists but branch naming doesn't match.
 ```
-or:
 ```
 Detected mode: Test-plan reconciliation (found qa/test-plans/QA-plan-{ID}.md)
 ```
+```
+Detected mode: Code-review reconciliation (found PR #N from branch <branch-name>)
+```
+For draft PRs, display: `found Draft PR #N from branch <branch-name>`
+
+| Mode | Trigger | Next Steps |
+|------|---------|------------|
+| Standard review | No PR, no test plan | Steps 2-9 |
+| Test-plan reconciliation | Test plan exists, no PR | Steps R1-R7 |
+| Code-review reconciliation | PR exists (with or without test plan) | Steps CR1-CR5 |
 
 ## Step 2: Parse Document
 
@@ -112,114 +133,37 @@ While parsing, collect all items that need verification:
 
 ## Step 3: Codebase Reference Verification
 
-For each file path, function name, and code reference extracted in Step 2:
+For each reference extracted in Step 2, use targeted searches (not exhaustive scans). Parallelize independent searches using the Agent tool when there are many references.
 
-### File Paths
-1. Use Glob to check if the referenced path exists
-2. If not found, search for similar filenames to suggest corrections:
-   - Extract the basename and search with `**/{basename}`
-   - If a likely match is found, classify as **Moved** with a suggestion
-   - If no match, classify as **Missing**
-
-### Function/Class Names
-1. Use Grep to search for the function or class definition
-2. If found in a different file than referenced, classify as **Moved**
-3. If found in multiple locations, classify as **Ambiguous** and list candidates
-4. If not found anywhere, classify as **Missing**
-
-### Module/Package References
-1. For npm package references, check `package.json` dependencies
-2. For internal module references, verify the import path exists
-
-**Important**: Use targeted searches, not exhaustive scans. Search for specific names in specific directories. Parallelize independent searches using the Agent tool when there are many references to verify.
+- **File paths**: Glob to check existence. If not found, search `**/{basename}` — classify as **Moved** (likely match found) or **Missing** (no match).
+- **Function/class names**: Grep for the definition. Classify as **Moved** (found in different file), **Ambiguous** (multiple locations), or **Missing**.
+- **Module/package refs**: Check `package.json` for npm packages; verify import paths exist for internal modules.
 
 ## Step 4: Documentation Citation Verification
 
-For each external claim or documentation citation found in Step 2:
-
-1. **Framework/library API claims**: Search for the referenced API in:
-   - `node_modules/<specific-package>/` type definitions when a specific package is named (e.g., search `node_modules/ai-skills-manager/` not all of `node_modules/`)
-   - README files in the project
-   - `references/` directories in relevant skills
-2. **Behavior claims**: If the document asserts specific behavior of a tool, framework, or library, check if this can be verified against available documentation
-3. **If verification is not possible** (e.g., external docs not available locally), classify as a **Warning** rather than an **Error**, noting that the claim could not be verified
-
-Do not attempt to fetch external URLs or documentation sites. Only verify against locally available information.
+For external claims about framework/library APIs: search `node_modules/<specific-package>/` type definitions, project READMEs, and `references/` directories. For behavior claims, verify against locally available documentation. Classify unverifiable claims as **Warning** (not Error). Do not fetch external URLs.
 
 ## Step 5: Internal Consistency Checks
 
-Run these checks based on document type:
+**All types**: acceptance criteria must be testable; dependencies must match what's referenced; edge cases must have handling described elsewhere.
 
-### All Document Types
-- Every acceptance criterion should be testable (not vague or subjective)
-- Dependencies section should list items actually referenced in the document
-- Edge cases should have corresponding handling described elsewhere in the document
+**FEAT**: FR-N ↔ acceptance criteria bidirectional coverage; edge cases must not contradict FRs; output format consistent with FRs; command syntax/invocation matches FRs.
 
-### Feature Requirements (FEAT)
-- Every FR-N should have at least one corresponding acceptance criterion
-- Every acceptance criterion should trace back to at least one FR-N or NFR-N
-- Edge cases should not contradict functional requirements
-- Output format examples should be consistent with FR descriptions
-- If Command Syntax / Skill Invocation is present, arguments and options should match what FRs describe
+**BUG**: RC-N ↔ acceptance criteria bidirectional coverage (with `(RC-N)` tags); steps to reproduce consistent with root causes; affected files align with RC locations.
 
-### Bug Reports (BUG)
-- Every RC-N (Root Cause) should have at least one corresponding acceptance criterion with an `(RC-N)` tag
-- Every acceptance criterion should reference at least one RC-N
-- Steps to reproduce should be consistent with the root cause analysis
-- Affected files should align with root cause locations
+**CHORE**: scope boundaries clear; affected files exist in codebase (verify via Glob).
 
-### Chore Documents (CHORE)
-- Scope boundaries should be clear (what changes and what does not)
-- Affected files should all exist in the codebase (verify via Glob)
-
-### Implementation Plans
-- Phase dependencies should be consistent (no circular deps, no referencing non-existent phases)
-- Phase status markers should be valid (`Pending`, `🔄 In Progress`, or `✅ Complete`)
-- Deliverable file paths should be plausible (consistent with project structure)
-- If a phase says "Depends on Phase N", Phase N should exist and come earlier in the sequence
+**Implementation plans**: phase dependencies consistent (no circular refs); status markers valid (`Pending`/`🔄 In Progress`/`✅ Complete`); deliverable paths plausible; "Depends on Phase N" references valid earlier phases.
 
 ## Step 6: Gap Analysis
 
-Look for what's missing from the document:
-
-### Missing Error Handling
-- For each operation described in FRs (file reads, API calls, user input), check that there's a corresponding error scenario in Edge Cases or NFRs
-- Flag operations without failure mode coverage
-
-### Untested Paths
-- For each FR-N, check that Testing Requirements includes a relevant test case
-- Flag FRs without corresponding test coverage
-
-### Unstated Assumptions
-- Identify dependencies that are used but not listed in the Dependencies section
-- Identify configuration or environment requirements not mentioned
-- Check for implicit ordering constraints not documented
-
-### Missing Edge Cases
-- Based on the feature domain, identify common edge cases not listed:
-  - Empty input, null/undefined values
-  - Boundary conditions (max/min values)
-  - Concurrent access or race conditions (if applicable)
-  - Permission/access errors
+Identify what's missing: operations without error handling in Edge Cases/NFRs; FR-N entries without corresponding test cases; dependencies used but not listed; configuration/environment requirements not mentioned; implicit ordering constraints; common edge cases for the domain (empty input, boundary conditions, concurrent access, permission errors).
 
 ## Step 7: Cross-Reference Validation
 
-### Requirement Document References
-For each reference to another requirement document (e.g., "See FEAT-005", "Related to CHORE-003"):
-1. Use Glob to search for matching files in `requirements/features/`, `requirements/chores/`, `requirements/bugs/`, `requirements/implementation/`
-2. If not found, classify as **Error**
-3. If found but the reference is imprecise (e.g., says "FEAT-003" but file is `FEAT-003-skill-allowed-tools.md`), classify as **Info** suggesting a more precise reference
-
-### GitHub Issue References
-For each `#N` reference (validate up to 5; if more exist, note the remainder as unchecked to avoid API rate limits):
-1. Use `gh issue view N --json state,title` to verify the issue exists
-2. If the command fails or issue is not found, classify as **Warning** (the issue may be in a different repo or inaccessible)
-3. If the issue exists, optionally verify its title aligns with the context
-
-### Skill/Workflow References
-For references to other skills (e.g., "use `documenting-features` skill"):
-1. Check that the skill directory exists under `plugins/lwndev-sdlc/skills/`
-2. If not found, classify as **Error**
+- **Requirement docs**: Glob for referenced IDs in `requirements/` directories. **Error** if not found; **Info** if imprecise.
+- **GitHub issues**: `gh issue view N --json state,title` (validate up to 5). **Warning** if not found or inaccessible.
+- **Skill references**: Check skill directory exists under `plugins/lwndev-sdlc/skills/`. **Error** if not found.
 
 ## Step 8: Present Findings
 
@@ -291,129 +235,96 @@ After presenting findings, offer to apply fixes **only for findings that have cl
 
 ## Test-Plan Reconciliation Mode
 
-When a QA test plan exists for the given requirement ID, this mode validates bidirectional consistency between the test plan and the upstream requirement document. This closes the feedback loop where QA planning surfaces new insights that should be propagated back to requirements.
+When a QA test plan exists for the requirement ID, validate bidirectional consistency between the test plan and the upstream requirement document.
 
 ### Step R1: Load Documents
 
-1. Read the requirement document (already resolved in Step 1)
-2. Read the QA test plan at `qa/test-plans/QA-plan-{ID}.md`
-3. If an implementation plan exists (for `FEAT-` IDs), also load it from `requirements/implementation/`
-
-Extract from the requirement document:
-- All traceability IDs: FR-N (features), RC-N (bugs), acceptance criteria
-- NFR-N entries (if present)
-
-Extract from the test plan:
-- All entries in Code Path Verification (with their Requirement references)
-- All entries in New Test Analysis (with their Requirement Ref)
-- All entries in Coverage Gap Analysis (with their Requirement Ref)
-- Deliverable Verification entries
-- Verification Checklist items
+Load the requirement document (already resolved), the QA test plan at `qa/test-plans/QA-plan-{ID}.md`, and the implementation plan if one exists. Extract all traceability IDs (FR-N, RC-N, NFR-N, acceptance criteria) from requirements, and all entries (Code Path Verification, New Test Analysis, Coverage Gap Analysis, Deliverable Verification, Verification Checklist) from the test plan.
 
 ### Step R2: Bidirectional Cross-Reference Check
 
-Validate that every traceability ID maps in both directions:
-
-**Requirements → Test Plan direction:**
-For each FR-N, RC-N, or acceptance criterion in the requirement document, check that at least one test plan entry references it. Flag any requirement item without test plan coverage.
-
-**Test Plan → Requirements direction:**
-For each test plan entry that references a traceability ID (FR-N, RC-N, AC), verify that the referenced ID exists in the requirement document. Flag any test plan entry that references a non-existent requirement.
-
-Classify findings:
-- **Error**: Test plan references a traceability ID that does not exist in the requirements
-- **Warning**: A requirement (FR-N, RC-N, or AC) has no corresponding test plan entry
+Validate every traceability ID maps in both directions. **Requirements → Test Plan**: each FR-N, RC-N, AC must have at least one test plan entry. **Test Plan → Requirements**: each test plan reference must point to an existing requirement ID. Classify: **Error** if test plan references non-existent ID; **Warning** if a requirement has no test plan coverage.
 
 ### Step R3: Drift Detection
 
-Identify test plan entries that introduce scenarios, edge cases, or assumptions not present in the original requirements:
-
-1. Scan the test plan's New Test Analysis and Coverage Gap Analysis sections for entries that do not trace back to any FR-N, RC-N, or acceptance criterion
-2. Scan the test plan's Code Path Verification for "Expected Code Path" descriptions that describe behavior not stated in the requirements
-3. Check the test plan's Verification Checklist for items that go beyond what the requirements specify
-
-For each drift finding:
-- Describe what the test plan introduced
-- Classify as **Info** with the label "Backport Candidate"
-- Suggest which section of the requirements document should be updated to incorporate the new scenario
+Find test plan entries introducing scenarios not in the original requirements — scan New Test Analysis, Coverage Gap Analysis, Code Path Verification, and Verification Checklist for content not traceable to any FR-N, RC-N, or AC. Classify as **Info** with label "Backport Candidate" and suggest which requirements section to update.
 
 ### Step R4: Reconciliation Gap Analysis
 
-Identify requirements that lack test plan coverage. This is distinct from standard review Step 6 ("Untested Paths"), which checks the requirement document's own inline "Testing Requirements" section against its FR-N entries. Reconciliation gap analysis instead checks the external QA test plan document at `qa/test-plans/QA-plan-{ID}.md` against the requirement's traceability IDs.
-
-1. For each FR-N or RC-N in the requirements, check whether the test plan's Code Path Verification table has a corresponding row
-2. For each acceptance criterion, check whether it appears in the test plan's Verification Checklist or Code Path Verification
-3. For implementation plans: check whether each phase deliverable appears in the test plan's Deliverable Verification table
-
-Classify findings:
-- **Warning**: Requirement item has no corresponding test plan entry (may indicate the test plan is incomplete)
+Check the external QA test plan (distinct from Step 6's inline testing check) against the requirement's traceability IDs: each FR-N/RC-N should have a Code Path Verification row; each AC should appear in Verification Checklist or Code Path Verification; each phase deliverable should appear in Deliverable Verification. Classify: **Warning** for missing coverage.
 
 ### Step R5: Inconsistency Detection
 
-Compare the expected behavior described in the test plan against what the requirements specify:
-
-1. For each Code Path Verification entry, compare its "Description" and "Expected Code Path" against the corresponding FR-N or RC-N description in the requirements
-2. Check that the test plan's Deliverable Verification paths match the expected paths in the requirements or implementation plan
-3. If the test plan's New Test Analysis recommends tests for scenarios that contradict a requirement, flag the contradiction
-
-Classify findings:
-- **Error**: Direct contradiction between test plan expectation and requirement specification
-- **Warning**: Ambiguous inconsistency that may reflect a difference in interpretation
+Compare test plan expectations against requirements: Code Path Verification descriptions vs. FR-N/RC-N; Deliverable Verification paths vs. requirements/implementation plan; New Test Analysis recommendations vs. requirements. Classify: **Error** for direct contradictions; **Warning** for ambiguous inconsistencies.
 
 ### Step R6: Present Reconciliation Findings
 
-Use the same severity classification and finding format as standard review (Step 8), with these additional category groupings:
-
-1. **Cross-Reference Consistency** (Step R2)
-2. **Drift / Backport Candidates** (Step R3)
-3. **Test Plan Coverage Gaps** (Step R4)
-4. **Inconsistencies** (Step R5)
-
-Display a summary count at the top:
-```
-Test-plan reconciliation for {ID}: Found **N errors**, **N warnings**, **N info**
-```
-
-For each finding, include an actionable suggestion specifying which artifact to update:
-- **Requirements document**: "Consider adding this edge case to the Edge Cases section of {requirement file}"
-- **GitHub issue**: "Consider posting a comment on #{issue_number} noting this scope clarification"
-- **Implementation plan**: "Consider updating Phase N deliverables in {implementation plan file}"
+Use the same format as Step 8 with categories: Cross-Reference Consistency (R2), Drift/Backport Candidates (R3), Test Plan Coverage Gaps (R4), Inconsistencies (R5). Include actionable suggestions targeting specific artifacts (requirements doc, GitHub issue, implementation plan).
 
 ### Step R7: Offer Updates
 
-After presenting reconciliation findings, offer to apply updates where the correction is clear:
+Offer to apply clear corrections: backport candidates to Edge Cases/Acceptance Criteria, missing traceability references. Not auto-fixable: contradictions (design decisions), GitHub issue comments (user judgment), implementation plan changes (scope impact). Follow the same fix workflow as Step 9.
 
-**Applicable updates:**
-- Adding backport candidate scenarios to the requirements document's Edge Cases or Acceptance Criteria sections
-- Adding missing traceability references to test plan entries
+## Code-Review Reconciliation Mode
 
-**Not applicable (require manual review):**
-- Resolving contradictions between test plan and requirements (requires design decision)
-- Posting GitHub issue comments (requires user judgment on wording)
-- Modifying implementation plan phases (may affect scope and timeline)
+When a PR exists for the requirement ID, produce an advisory drift report. This mode covers areas that `executing-qa`'s reconciliation loop does not: test plan staleness, GitHub issue updates, and a preview of requirements-to-code drift.
 
-Follow the same fix workflow as Step 9: list applicable vs. manual-review items, ask for approval, show diff preview before applying.
+**Scope boundary**: This mode is entirely advisory. It does NOT update affected files lists, modify implementation plan phases/deliverables/status, add deviation summaries, or auto-fix requirements documents. Those are handled by `executing-qa` reconciliation.
+
+### Step CR1: Load PR Context
+
+Fetch the PR diff using `gh pr diff <number>`. If `gh` is unavailable, fall back to `git diff <base-branch>...HEAD`. Load the requirement document (already resolved in Step 1). Load the test plan from `qa/test-plans/QA-plan-{ID}.md` if it exists — if not, skip CR2 and note as **Info** ("No test plan found; test plan staleness detection skipped"). If the PR diff is very large (> 100 changed files), warn the user and focus on files referenced in requirements and test plan. Fork PRs are supported — `gh pr diff` works normally for PRs from forks.
+
+### Step CR2: Test Plan Staleness Detection
+
+Compare test plan entries (Code Path Verification, New Test Analysis, Coverage Gap Analysis) against the PR diff. Flag entries referencing:
+- **Changed function signatures or APIs** — parameter changes, renames, modified return types visible in the diff
+- **Removed or renamed files** — test entries referencing files deleted or renamed in the PR
+- **Modified behavior** — test entries whose "Expected Code Path" or "Description" describes behavior the diff alters
+
+For each flagged entry, describe specifically what changed in the PR diff and how it affects the test plan entry. Classify: **Error** for entries that will definitely fail; **Warning** for entries that may verify the wrong thing.
+
+### Step CR3: GitHub Issue Suggestions
+
+Compare the PR diff and requirement document against the linked GitHub issue (from the requirement's "GitHub Issue" field). If no GitHub issue is linked, skip and note as **Info**. Produce draft suggestions for:
+- **Scope changes** — behavior added or removed that differs from the original issue
+- **Decisions made during review** — design choices or trade-offs resolved during code review
+- **Deferred work** — items intentionally deferred to follow-up issues
+
+Each suggestion includes a draft comment for user review. Never post or modify the issue directly.
+
+### Step CR4: Advisory Requirements Drift Summary
+
+Compare the PR diff against FR-N entries, acceptance criteria, and edge cases. Identify:
+- FRs describing behavior not present in the diff (potentially unimplemented or changed)
+- Diff changes introducing behavior not described in any FR (potentially undocumented)
+- Acceptance criteria that may not hold given the actual implementation
+
+Present as advisory only. Note that `executing-qa` reconciliation will handle actual document updates. Classify: **Warning** for drift findings; **Info** for minor discrepancies.
+
+### Step CR5: Present Findings
+
+Use the same severity classification and finding format as Step 8, with these categories:
+
+1. **Test Plan Staleness** (CR2) — entries that may fail or verify the wrong thing
+2. **GitHub Issue Suggestions** (CR3) — recommended issue updates
+3. **Requirements ↔ Code Drift** (CR4) — advisory divergence preview
+
+Display a summary count:
+```
+Code-review reconciliation for {ID} (PR #{N}): Found **N errors**, **N warnings**, **N info**
+```
+
+For findings that relate to `executing-qa`'s scope, note: "This drift will be addressed by `executing-qa` reconciliation."
 
 ## Document Type Adaptations
 
-### When Reviewing a Feature Requirement
-Run all steps (1-9). This is the most comprehensive review.
-
-### When Reviewing a Chore Document
-- Skip Step 4 (Documentation Citation Verification) unless the chore references specific APIs
-- Emphasize Step 5 scope boundary checks
-- Emphasize Step 3 affected files verification
-
-### When Reviewing a Bug Report
-- Emphasize RC-N to acceptance criteria traceability (Step 5)
-- Verify affected files exist and are plausible locations for the described bug (Step 3)
-- Check that steps to reproduce are specific and complete (Step 5)
-
-### When Reviewing an Implementation Plan
-- Emphasize phase dependency consistency (Step 5)
-- Verify deliverable paths are plausible (Step 3)
-- Check for referenced feature requirements docs (Step 7)
-- Verify status markers are valid (Step 5)
+| Type | Adaptation |
+|------|-----------|
+| **FEAT** | Run all steps (1-9) — most comprehensive |
+| **CHORE** | Skip Step 4 unless APIs referenced; emphasize Step 5 scope boundaries and Step 3 affected files |
+| **BUG** | Emphasize RC-N ↔ AC traceability (Step 5); verify affected files (Step 3); check reproduction steps |
+| **Implementation Plan** | Emphasize phase dependency consistency and status markers (Step 5); verify deliverable paths (Step 3); check feature requirement refs (Step 7) |
 
 ## Verification Checklist
 
@@ -447,22 +358,28 @@ Before finishing a reconciliation review, verify:
 - [ ] Summary count is accurate
 - [ ] Update suggestions are offered where applicable
 
+### Code-Review Reconciliation
+
+Before finishing a code-review reconciliation, verify:
+
+- [ ] PR detected and mode entered correctly (or `--pr` flag used)
+- [ ] PR diff loaded (or `git diff` fallback used if `gh` unavailable)
+- [ ] Test plan entries compared against PR diff (or skip noted if no test plan)
+- [ ] GitHub issue suggestions produced (or skip noted if no issue linked)
+- [ ] Advisory drift summary presented (no auto-fixes applied)
+- [ ] Scope boundary respected (no `executing-qa` work duplicated)
+- [ ] Findings organized by category with correct severity classification
+- [ ] Summary count is accurate
+
 ## Relationship to Other Skills
 
-This skill appears in two positions in each workflow chain — once before QA planning (standard review) and optionally again after QA planning (test-plan reconciliation):
+This skill appears at multiple points in each workflow chain. The mode is automatic: PR exists → code-review reconciliation; test plan exists (no PR) → test-plan reconciliation; otherwise → standard review.
 
 ```
-Features: documenting-features → reviewing-requirements → documenting-qa → reviewing-requirements → creating-implementation-plans → implementing-plan-phases → executing-qa
-                                  (standard review)                          (reconciliation)
-
-Chores:   documenting-chores → reviewing-requirements → documenting-qa → reviewing-requirements → executing-chores → executing-qa
-                                (standard review)                          (reconciliation)
-
-Bugs:     documenting-bugs → reviewing-requirements → documenting-qa → reviewing-requirements → executing-bug-fixes → executing-qa
-                              (standard review)                          (reconciliation)
+Pre-QA:   documenting-* → reviewing-requirements (standard review) → documenting-qa
+Post-QA:  documenting-qa → reviewing-requirements (test-plan reconciliation) → creating-implementation-plans / executing-*
+Post-PR:  PR review → reviewing-requirements (code-review reconciliation) → executing-qa
 ```
-
-The mode is automatic: if a test plan exists when invoked, it runs reconciliation; otherwise, it runs standard review.
 
 | Task | Recommended Approach |
 |------|---------------------|
@@ -470,6 +387,7 @@ The mode is automatic: if a test plan exists when invoked, it runs reconciliatio
 | **Review requirements (before QA)** | **Use this skill — standard review mode** |
 | Build QA test plan | Use `documenting-qa` |
 | **Review requirements (after QA)** | **Use this skill — test-plan reconciliation mode** |
+| **Review requirements (after PR review)** | **Use this skill — code-review reconciliation mode** |
 | Create implementation plan | Use `creating-implementation-plans` |
 | Implement the plan | Use `implementing-plan-phases` |
 | Execute chore or bug fix | Use `executing-chores` or `executing-bug-fixes` |
