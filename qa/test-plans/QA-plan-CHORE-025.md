@@ -16,19 +16,19 @@ Tests that already exist and must continue to pass (regression baseline):
 
 | Test File | Description | Status |
 |-----------|-------------|--------|
-| `scripts/__tests__/documenting-qa.test.ts` — SKILL.md frontmatter (name, description) | Validates frontmatter has `name: documenting-qa` and non-empty description | PENDING |
-| `scripts/__tests__/documenting-qa.test.ts` — allowed-tools | Validates Read, Write, Edit, Glob, Grep, Agent present and Bash absent | PENDING |
-| `scripts/__tests__/documenting-qa.test.ts` — stop hook | Validates Stop hook with type: prompt, model: haiku, stop_hook_active | PENDING |
-| `scripts/__tests__/documenting-qa.test.ts` — template sections | Validates Metadata, Existing Test Verification, New Test Analysis, Coverage Gap Analysis, Code Path Verification sections exist | PENDING |
-| `scripts/__tests__/documenting-qa.test.ts` — template Plan Completeness Checklist | Updated to check `## Plan Completeness Checklist` (renamed from `## Verification Checklist`) | PENDING |
-| `scripts/__tests__/documenting-qa.test.ts` — SKILL.md sections | Validates When to Use, Verification Checklist, Relationship to Other Skills sections in SKILL.md | PENDING |
-| `scripts/__tests__/documenting-qa.test.ts` — validation API | Passes `ai-skills-manager` validation | PENDING |
-| `scripts/__tests__/executing-qa.test.ts` — SKILL.md frontmatter (name, description) | Validates frontmatter has `name: executing-qa` and non-empty description | PENDING |
-| `scripts/__tests__/executing-qa.test.ts` — allowed-tools | Validates Read, Write, Edit, Bash, Glob, Grep, Agent present | PENDING |
-| `scripts/__tests__/executing-qa.test.ts` — stop hook | Validates Stop hook with type: prompt, model: haiku, stop_hook_active | PENDING |
-| `scripts/__tests__/executing-qa.test.ts` — template sections | Validates Metadata, Test Suite Results, Per-Entry Verification Results, Issues Found and Fixed, Reconciliation Summary, Deviation Notes sections exist | PENDING |
-| `scripts/__tests__/executing-qa.test.ts` — SKILL.md sections | Validates When to Use, Verification Checklist, Relationship to Other Skills, Verification/Reconciliation loops, Preservation Rules | PENDING |
-| `scripts/__tests__/executing-qa.test.ts` — validation API | Passes `ai-skills-manager` validation | PENDING |
+| `scripts/__tests__/documenting-qa.test.ts` — SKILL.md frontmatter (name, description) | Validates frontmatter has `name: documenting-qa` and non-empty description | PASS |
+| `scripts/__tests__/documenting-qa.test.ts` — allowed-tools | Validates Read, Write, Edit, Glob, Grep, Agent present and Bash absent | PASS |
+| `scripts/__tests__/documenting-qa.test.ts` — stop hook | Validates Stop hook with type: prompt, model: haiku, stop_hook_active | PASS |
+| `scripts/__tests__/documenting-qa.test.ts` — template sections | Validates Metadata, Existing Test Verification, New Test Analysis, Coverage Gap Analysis, Code Path Verification sections exist | PASS |
+| `scripts/__tests__/documenting-qa.test.ts` — template Plan Completeness Checklist | Updated to check `## Plan Completeness Checklist` (renamed from `## Verification Checklist`) | PASS |
+| `scripts/__tests__/documenting-qa.test.ts` — SKILL.md sections | Validates When to Use, Verification Checklist, Relationship to Other Skills sections in SKILL.md | PASS |
+| `scripts/__tests__/documenting-qa.test.ts` — validation API | Passes `ai-skills-manager` validation | PASS |
+| `scripts/__tests__/executing-qa.test.ts` — SKILL.md frontmatter (name, description) | Validates frontmatter has `name: executing-qa` and non-empty description | PASS |
+| `scripts/__tests__/executing-qa.test.ts` — allowed-tools | Validates Read, Write, Edit, Bash, Glob, Grep, Agent present | PASS |
+| `scripts/__tests__/executing-qa.test.ts` — stop hook | Validates Stop hook with type: prompt, model: haiku, stop_hook_active | PASS |
+| `scripts/__tests__/executing-qa.test.ts` — template sections | Validates Metadata, Test Suite Results, Per-Entry Verification Results, Issues Found and Fixed, Reconciliation Summary, Deviation Notes sections exist | PASS |
+| `scripts/__tests__/executing-qa.test.ts` — SKILL.md sections | Validates When to Use, Verification Checklist, Relationship to Other Skills, Verification/Reconciliation loops, Preservation Rules | PASS |
+| `scripts/__tests__/executing-qa.test.ts` — validation API | Passes `ai-skills-manager` validation | PASS |
 
 ## New Test Analysis
 
@@ -36,11 +36,11 @@ New or modified tests that should be created or verified during QA execution:
 
 | Test Description | Target File(s) | Requirement Ref | Priority | Status |
 |-----------------|----------------|-----------------|----------|--------|
-| Update template Verification Checklist assertion to check for `## Plan Completeness Checklist` instead of `## Verification Checklist`. Note: AC1 applies only to the template heading, not the SKILL.md's own `## Verification Checklist` section (which is a standard skill structure element and remains unchanged). The test at line 34 (`skillMd.toContain('## Verification Checklist')`) should continue to pass as-is. | `scripts/__tests__/documenting-qa.test.ts` | AC1 | High | -- |
-| Add assertion that test plan template NTA table includes a `Status` column header | `scripts/__tests__/documenting-qa.test.ts` | AC3 | High | -- |
-| Add assertion that test plan template CPV table includes a `Status` column header | `scripts/__tests__/documenting-qa.test.ts` | AC3 | High | -- |
-| Add assertion that test plan template Deliverable table has `Status` column (not `Exists`) | `scripts/__tests__/documenting-qa.test.ts` | AC5 | High | -- |
-| Add assertion that test results template Per-Entry Verification Results section contains NTA-mirrored columns | `scripts/__tests__/executing-qa.test.ts` | AC4 | Medium | -- |
+| Update template Verification Checklist assertion to check for `## Plan Completeness Checklist` instead of `## Verification Checklist`. Note: AC1 applies only to the template heading, not the SKILL.md's own `## Verification Checklist` section (which is a standard skill structure element and remains unchanged). The test at line 34 (`skillMd.toContain('## Verification Checklist')`) should continue to pass as-is. | `scripts/__tests__/documenting-qa.test.ts` | AC1 | High | PASS |
+| Add assertion that test plan template NTA table includes a `Status` column header | `scripts/__tests__/documenting-qa.test.ts` | AC3 | High | PASS |
+| Add assertion that test plan template CPV table includes a `Status` column header | `scripts/__tests__/documenting-qa.test.ts` | AC3 | High | PASS |
+| Add assertion that test plan template Deliverable table has `Status` column (not `Exists`) | `scripts/__tests__/documenting-qa.test.ts` | AC5 | High | PASS |
+| Add assertion that test results template Per-Entry Verification Results section contains NTA-mirrored columns | `scripts/__tests__/executing-qa.test.ts` | AC4 | Medium | PASS |
 
 ## Coverage Gap Analysis
 
@@ -70,12 +70,12 @@ Traceability from acceptance criteria to implementation:
 
 | Deliverable | Source Phase | Expected Path | Status |
 |-------------|-------------|---------------|--------|
-| Updated test plan template | Change A, B, AC5 | `plugins/lwndev-sdlc/skills/documenting-qa/assets/test-plan-template.md` | PENDING |
-| Updated documenting-qa SKILL.md | Change A | `plugins/lwndev-sdlc/skills/documenting-qa/SKILL.md` | PENDING |
-| Updated test results template | Change C | `plugins/lwndev-sdlc/skills/executing-qa/assets/test-results-template.md` | PENDING |
-| Updated executing-qa SKILL.md | Change D | `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md` | PENDING |
-| Updated documenting-qa tests | AC7 | `scripts/__tests__/documenting-qa.test.ts` | PENDING |
-| Updated executing-qa tests | AC7 | `scripts/__tests__/executing-qa.test.ts` | PENDING |
+| Updated test plan template | Change A, B, AC5 | `plugins/lwndev-sdlc/skills/documenting-qa/assets/test-plan-template.md` | PASS |
+| Updated documenting-qa SKILL.md | Change A | `plugins/lwndev-sdlc/skills/documenting-qa/SKILL.md` | PASS |
+| Updated test results template | Change C | `plugins/lwndev-sdlc/skills/executing-qa/assets/test-results-template.md` | PASS |
+| Updated executing-qa SKILL.md | Change D | `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md` | PASS |
+| Updated documenting-qa tests | AC7 | `scripts/__tests__/documenting-qa.test.ts` | PASS |
+| Updated executing-qa tests | AC7 | `scripts/__tests__/executing-qa.test.ts` | PASS |
 
 ## Scope Verification
 
