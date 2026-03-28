@@ -10,7 +10,7 @@ All changes are to SKILL.md files — no application code changes. The work is p
 
 | Feature ID | GitHub Issue | Feature Document | Priority | Complexity | Status |
 |------------|--------------|------------------|----------|------------|--------|
-| FEAT-008 | [#14](https://github.com/lwndev/lwndev-marketplace/issues/14) | [FEAT-008-skill-argument-hints.md](../features/FEAT-008-skill-argument-hints.md) | Medium | Low | Pending |
+| FEAT-008 | [#14](https://github.com/lwndev/lwndev-marketplace/issues/14) | [FEAT-008-skill-argument-hints.md](../features/FEAT-008-skill-argument-hints.md) | Medium | Low | ✅ Complete |
 
 ## Recommended Build Sequence
 

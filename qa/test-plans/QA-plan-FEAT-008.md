@@ -16,19 +16,19 @@ Tests that already exist and must continue to pass (regression baseline):
 
 | Test File | Description | Status |
 |-----------|-------------|--------|
-| `scripts/__tests__/build.test.ts` | Validates all 11 skills pass `npm run validate`; verifies plugin structure | PENDING |
-| `scripts/__tests__/skill-utils.test.ts` | Verifies skill discovery and SKILL.md frontmatter parsing | PENDING |
-| `scripts/__tests__/scaffold.test.ts` | Tests `argument-hint` scaffold support (lines 113-134) | PENDING |
-| `scripts/__tests__/documenting-features.test.ts` | Validates documenting-features SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/documenting-chores.test.ts` | Validates documenting-chores SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/documenting-bugs.test.ts` | Validates documenting-bugs SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/executing-chores.test.ts` | Validates executing-chores SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/executing-bug-fixes.test.ts` | Validates executing-bug-fixes SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/implementing-plan-phases.test.ts` | Validates implementing-plan-phases SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/reviewing-requirements.test.ts` | Validates reviewing-requirements SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/documenting-qa.test.ts` | Validates documenting-qa SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/executing-qa.test.ts` | Validates executing-qa SKILL.md frontmatter and structure | PENDING |
-| `scripts/__tests__/creating-implementation-plans.test.ts` | Validates creating-implementation-plans SKILL.md frontmatter and structure | PENDING |
+| `scripts/__tests__/build.test.ts` | Validates all 11 skills pass `npm run validate`; verifies plugin structure | PASS |
+| `scripts/__tests__/skill-utils.test.ts` | Verifies skill discovery and SKILL.md frontmatter parsing | PASS |
+| `scripts/__tests__/scaffold.test.ts` | Tests `argument-hint` scaffold support (lines 113-134) | PASS |
+| `scripts/__tests__/documenting-features.test.ts` | Validates documenting-features SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/documenting-chores.test.ts` | Validates documenting-chores SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/documenting-bugs.test.ts` | Validates documenting-bugs SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/executing-chores.test.ts` | Validates executing-chores SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/executing-bug-fixes.test.ts` | Validates executing-bug-fixes SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/implementing-plan-phases.test.ts` | Validates implementing-plan-phases SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/reviewing-requirements.test.ts` | Validates reviewing-requirements SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/documenting-qa.test.ts` | Validates documenting-qa SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/executing-qa.test.ts` | Validates executing-qa SKILL.md frontmatter and structure | PASS |
+| `scripts/__tests__/creating-implementation-plans.test.ts` | Validates creating-implementation-plans SKILL.md frontmatter and structure | PASS |
 
 ## New Test Analysis
 
@@ -81,28 +81,28 @@ Traceability from requirements to implementation:
 
 | Deliverable | Source Phase | Expected Path | Exists |
 |-------------|-------------|---------------|--------|
-| executing-chores SKILL.md update | Phase 1 | `plugins/lwndev-sdlc/skills/executing-chores/SKILL.md` | PENDING |
-| executing-bug-fixes SKILL.md update | Phase 1 | `plugins/lwndev-sdlc/skills/executing-bug-fixes/SKILL.md` | PENDING |
-| implementing-plan-phases SKILL.md update | Phase 1 | `plugins/lwndev-sdlc/skills/implementing-plan-phases/SKILL.md` | PENDING |
-| executing-qa SKILL.md update | Phase 1 | `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md` | PENDING |
-| documenting-features SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/documenting-features/SKILL.md` | PENDING |
-| documenting-chores SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/documenting-chores/SKILL.md` | PENDING |
-| documenting-bugs SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/documenting-bugs/SKILL.md` | PENDING |
-| documenting-qa SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/documenting-qa/SKILL.md` | PENDING |
-| creating-implementation-plans SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/creating-implementation-plans/SKILL.md` | PENDING |
-| reviewing-requirements SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/reviewing-requirements/SKILL.md` | PENDING |
-| argument-hint test file | Phase 3 | `scripts/__tests__/argument-hint.test.ts` | PENDING |
-| Full plugin validation passing | Phase 3 | `npm run validate` exit code 0 | PENDING |
-| Full test suite passing | Phase 3 | `npm test` exit code 0 | PENDING |
+| executing-chores SKILL.md update | Phase 1 | `plugins/lwndev-sdlc/skills/executing-chores/SKILL.md` | PASS |
+| executing-bug-fixes SKILL.md update | Phase 1 | `plugins/lwndev-sdlc/skills/executing-bug-fixes/SKILL.md` | PASS |
+| implementing-plan-phases SKILL.md update | Phase 1 | `plugins/lwndev-sdlc/skills/implementing-plan-phases/SKILL.md` | PASS |
+| executing-qa SKILL.md update | Phase 1 | `plugins/lwndev-sdlc/skills/executing-qa/SKILL.md` | PASS |
+| documenting-features SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/documenting-features/SKILL.md` | PASS |
+| documenting-chores SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/documenting-chores/SKILL.md` | PASS |
+| documenting-bugs SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/documenting-bugs/SKILL.md` | PASS |
+| documenting-qa SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/documenting-qa/SKILL.md` | PASS |
+| creating-implementation-plans SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/creating-implementation-plans/SKILL.md` | PASS |
+| reviewing-requirements SKILL.md update | Phase 2 | `plugins/lwndev-sdlc/skills/reviewing-requirements/SKILL.md` | PASS |
+| argument-hint test file | Phase 3 | `scripts/__tests__/argument-hint.test.ts` | PASS |
+| Full plugin validation passing | Phase 3 | `npm run validate` exit code 0 | PASS |
+| Full test suite passing | Phase 3 | `npm test` exit code 0 | PASS |
 
 ## Verification Checklist
 
-- [ ] All existing tests pass (regression baseline)
-- [ ] All FR-N entries have corresponding test plan entries (FR-1 through FR-7)
-- [ ] All NFR entries have corresponding test plan entries (NFR-1 through NFR-3)
-- [ ] All acceptance criteria are covered (AC-1 through AC-11)
-- [ ] Coverage gaps are identified with recommendations
-- [ ] Code paths trace from requirements to implementation
-- [ ] Phase deliverables are accounted for (Phase 1: 4, Phase 2: 6, Phase 3: 3)
-- [ ] New test recommendations are actionable and prioritized
-- [ ] Edge cases 1-8 are covered in gap analysis
+- [x] All existing tests pass (regression baseline)
+- [x] All FR-N entries have corresponding test plan entries (FR-1 through FR-7)
+- [x] All NFR entries have corresponding test plan entries (NFR-1 through NFR-3)
+- [x] All acceptance criteria are covered (AC-1 through AC-11)
+- [x] Coverage gaps are identified with recommendations
+- [x] Code paths trace from requirements to implementation
+- [x] Phase deliverables are accounted for (Phase 1: 4, Phase 2: 6, Phase 3: 3)
+- [x] New test recommendations are actionable and prioritized
+- [x] Edge cases 1-8 are covered in gap analysis
