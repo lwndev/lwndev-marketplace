@@ -27,17 +27,7 @@ When this skill is invoked, determine which phase to run:
 
 Ask the user which plugin to release if not specified. If only one plugin exists, auto-select it.
 
-### 2. Create a release branch
-
-Before making any changes, create and switch to a release branch:
-
-```bash
-git checkout -b release/<plugin-name>-v<version>
-```
-
-Note: You won't know the exact version yet. First determine the bump type (step 4), then create the branch with the correct version before running the release script.
-
-### 3. Review unreleased changes
+### 2. Review unreleased changes
 
 Run `git log` since the last tag to see what's changed:
 
@@ -49,7 +39,7 @@ git tag -l "<plugin-name>@*" --sort=-version:refname | head -1
 git log <last-tag>..HEAD --oneline
 ```
 
-### 4. Suggest a bump type
+### 3. Suggest a bump type
 
 Analyze the conventional commit prefixes to suggest the appropriate bump:
 
@@ -59,9 +49,9 @@ Analyze the conventional commit prefixes to suggest the appropriate bump:
 
 Present the change summary and suggestion to the user for confirmation before proceeding.
 
-### 5. Run the release script
+### 4. Run the release script
 
-After the user confirms the bump type and you've created the release branch:
+After the user confirms the bump type (the script will automatically create a `release/<plugin>-v<version>` branch when run from `main`):
 
 ```bash
 npm run release -- --plugin <name> --bump <type>
@@ -73,7 +63,7 @@ Or with an explicit version if the user specified one:
 npm run release -- --plugin <name> --version <x.y.z>
 ```
 
-### 6. Refine the changelog
+### 5. Refine the changelog
 
 The release script filters noise commits and collapses same-scope entries automatically. After the script runs, review the generated changelog section in `plugins/<name>/CHANGELOG.md` and refine if needed:
 
@@ -88,7 +78,7 @@ git add plugins/<name>/CHANGELOG.md
 git commit --amend --no-edit --no-verify
 ```
 
-### 7. Review the release commit
+### 6. Review the release commit
 
 Check for the `code-review` plugin:
 - **If installed:** invoke it via the Skill tool to review the release diff.
@@ -99,7 +89,7 @@ Check for the `code-review` plugin:
     - README version line was updated
   - Include this note in the summary: *"Tip: Install the `code-review` plugin for richer release reviews: `claude plugin install code-review@claude-code-marketplace`"*
 
-### 8. Push and open PR
+### 7. Push and open PR
 
 Ask the user if they want to push the branch and open a PR. If yes:
 
@@ -109,7 +99,7 @@ git push -u origin <branch-name>
 
 Then offer to create the PR with `gh pr create`.
 
-### 9. Remind about Phase 2
+### 8. Remind about Phase 2
 
 After the PR is created, clearly tell the user:
 
