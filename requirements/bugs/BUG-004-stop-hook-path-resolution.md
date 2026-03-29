@@ -53,11 +53,11 @@ The hook command `scripts/stop-hook.sh` resolves relative to the current working
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `In Progress`
 
-**Completed:** YYYY-MM-DD
+**Completed:** TBD
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** TBD
 
 ## Notes
 
