@@ -45,7 +45,7 @@ Build the `orchestrating-workflows` skill that drives SDLC workflow chains (feat
 
 ### Phase 2: SKILL.md — Orchestration Logic
 **Feature:** [FEAT-009](../features/FEAT-009-orchestrating-workflows-skill.md) | [#89](https://github.com/lwndev/lwndev-marketplace/issues/89)
-**Status:** Pending
+**Status:** ✅ Complete
 **Depends on:** Phase 1 (SKILL.md references `scripts/workflow-state.sh` throughout)
 
 #### Rationale
@@ -75,7 +75,7 @@ Build the `orchestrating-workflows` skill that drives SDLC workflow chains (feat
 15. Validate skill passes `npm run validate`
 
 #### Deliverables
-- [ ] `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` — orchestration skill document
+- [x] `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` — orchestration skill document
 
 ---
 
