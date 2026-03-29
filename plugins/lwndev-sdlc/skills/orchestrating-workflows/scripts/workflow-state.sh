@@ -80,6 +80,24 @@ generate_feature_steps() {
 STEPS
 }
 
+# Generate the chore chain step sequence (FR-1)
+# Fixed 9-step sequence with a single PR-review pause point, no phase loop
+generate_chore_steps() {
+  cat <<'STEPS'
+[
+  {"name":"Document chore","skill":"documenting-chores","context":"main","status":"pending","artifact":null,"completedAt":null},
+  {"name":"Review requirements (standard)","skill":"reviewing-requirements","context":"fork","status":"pending","artifact":null,"completedAt":null},
+  {"name":"Document QA test plan","skill":"documenting-qa","context":"main","status":"pending","artifact":null,"completedAt":null},
+  {"name":"Reconcile test plan","skill":"reviewing-requirements","context":"fork","status":"pending","artifact":null,"completedAt":null},
+  {"name":"Execute chore","skill":"executing-chores","context":"fork","status":"pending","artifact":null,"completedAt":null},
+  {"name":"PR review","skill":null,"context":"pause","status":"pending","artifact":null,"completedAt":null},
+  {"name":"Reconcile post-review","skill":"reviewing-requirements","context":"fork","status":"pending","artifact":null,"completedAt":null},
+  {"name":"Execute QA","skill":"executing-qa","context":"main","status":"pending","artifact":null,"completedAt":null},
+  {"name":"Finalize","skill":"finalizing-workflow","context":"fork","status":"pending","artifact":null,"completedAt":null}
+]
+STEPS
+}
+
 # Post-phase steps appended after phase steps are populated
 generate_post_phase_steps() {
   cat <<'STEPS'
@@ -115,9 +133,11 @@ cmd_init() {
     feature)
       steps=$(generate_feature_steps)
       ;;
-    chore|bug)
-      # Future: #90 (chore) and #91 (bug) chains
-      echo "Error: Chain type '${type}' is not yet implemented. Only 'feature' is supported." >&2
+    chore)
+      steps=$(generate_chore_steps)
+      ;;
+    bug)
+      echo "Error: Chain type 'bug' is not yet implemented." >&2
       exit 1
       ;;
     *)
@@ -202,7 +222,7 @@ cmd_advance() {
   local has_phase
   has_phase=$(jq --argjson step "$current_step" '.steps[$step] | has("phaseNumber")' "$file")
   if [[ "$has_phase" == "true" ]]; then
-    jq '.phases.completed = [.steps[] | select(has("phaseNumber") and .status == "complete")] | length' \
+    jq '.phases.completed = ([.steps[] | select(has("phaseNumber") and .status == "complete")] | length)' \
       "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
   fi
 
@@ -237,8 +257,12 @@ cmd_resume() {
   local now
   now=$(now_iso)
 
-  jq --arg now "$now" \
-    '.status = "in-progress" | .pauseReason = null | .error = null | .lastResumedAt = $now' \
+  local current_step
+  current_step=$(jq -r '.currentStep' "$file")
+
+  jq --arg now "$now" --argjson step "$current_step" \
+    '.status = "in-progress" | .pauseReason = null | .error = null | .lastResumedAt = $now
+     | if .steps[$step].status == "failed" then .steps[$step].status = "pending" else . end' \
     "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
 
   cat "$file"

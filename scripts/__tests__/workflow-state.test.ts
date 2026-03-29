@@ -121,8 +121,8 @@ describe('workflow-state.sh', () => {
       expect(err).toContain('Invalid ID format');
     });
 
-    it('rejects unsupported chain types', () => {
-      const err = run('init FEAT-001 chore', { expectError: true });
+    it('rejects bug chain type (not yet implemented)', () => {
+      const err = run('init BUG-001 bug', { expectError: true });
       expect(err).toContain('not yet implemented');
     });
 
@@ -149,6 +149,117 @@ describe('workflow-state.sh', () => {
       for (const field of requiredFields) {
         expect(state).toHaveProperty(field);
       }
+    });
+  });
+
+  describe('chore chain', () => {
+    it('generate_chore_steps produces exactly 9 steps with correct names, skills, and contexts', () => {
+      const state = runJSON('init CHORE-001 chore');
+      const steps = state.steps as Array<Record<string, unknown>>;
+
+      expect(steps).toHaveLength(9);
+
+      const expected = [
+        { name: 'Document chore', skill: 'documenting-chores', context: 'main' },
+        {
+          name: 'Review requirements (standard)',
+          skill: 'reviewing-requirements',
+          context: 'fork',
+        },
+        { name: 'Document QA test plan', skill: 'documenting-qa', context: 'main' },
+        { name: 'Reconcile test plan', skill: 'reviewing-requirements', context: 'fork' },
+        { name: 'Execute chore', skill: 'executing-chores', context: 'fork' },
+        { name: 'PR review', skill: null, context: 'pause' },
+        { name: 'Reconcile post-review', skill: 'reviewing-requirements', context: 'fork' },
+        { name: 'Execute QA', skill: 'executing-qa', context: 'main' },
+        { name: 'Finalize', skill: 'finalizing-workflow', context: 'fork' },
+      ];
+
+      for (let i = 0; i < expected.length; i++) {
+        expect(steps[i].name).toBe(expected[i].name);
+        expect(steps[i].skill).toBe(expected[i].skill);
+        expect(steps[i].context).toBe(expected[i].context);
+        expect(steps[i].status).toBe('pending');
+        expect(steps[i].artifact).toBeNull();
+        expect(steps[i].completedAt).toBeNull();
+      }
+    });
+
+    it('init CHORE-001 chore creates a valid state file with correct metadata', () => {
+      const state = runJSON('init CHORE-001 chore');
+
+      expect(state.id).toBe('CHORE-001');
+      expect(state.type).toBe('chore');
+      expect(state.currentStep).toBe(0);
+      expect(state.status).toBe('in-progress');
+      expect(state.pauseReason).toBeNull();
+      expect(state.prNumber).toBeNull();
+      expect(state.branch).toBeNull();
+      expect(state.startedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+      expect(state.lastResumedAt).toBeNull();
+      expect(state.phases).toEqual({ total: 0, completed: 0 });
+      expect(state.steps).toHaveLength(9);
+    });
+
+    it('all state commands work with chore chain state files', () => {
+      // init
+      runJSON('init CHORE-001 chore');
+
+      // status
+      const statusState = runJSON('status CHORE-001');
+      expect(statusState.id).toBe('CHORE-001');
+      expect(statusState.type).toBe('chore');
+
+      // advance
+      const advancedState = runJSON('advance CHORE-001');
+      expect(advancedState.currentStep).toBe(1);
+      const steps = advancedState.steps as Array<Record<string, unknown>>;
+      expect(steps[0].status).toBe('complete');
+
+      // pause
+      const pausedState = runJSON('pause CHORE-001 pr-review');
+      expect(pausedState.status).toBe('paused');
+      expect(pausedState.pauseReason).toBe('pr-review');
+
+      // resume
+      const resumedState = runJSON('resume CHORE-001');
+      expect(resumedState.status).toBe('in-progress');
+      expect(resumedState.pauseReason).toBeNull();
+
+      // fail
+      const failedState = runJSON('fail CHORE-001 "test error"');
+      expect(failedState.status).toBe('failed');
+      expect(failedState.error).toBe('test error');
+
+      // resume from failure
+      const recoveredState = runJSON('resume CHORE-001');
+      expect(recoveredState.status).toBe('in-progress');
+      expect(recoveredState.error).toBeNull();
+
+      // set-pr
+      const prState = runJSON('set-pr CHORE-001 55 chore/CHORE-001-test');
+      expect(prState.prNumber).toBe(55);
+      expect(prState.branch).toBe('chore/CHORE-001-test');
+
+      // complete
+      const completedState = runJSON('complete CHORE-001');
+      expect(completedState.status).toBe('complete');
+      expect(completedState.completedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    });
+
+    it('idempotency: init on an existing chore state file returns current state', () => {
+      runJSON('init CHORE-001 chore');
+      // Advance to change state
+      run('advance CHORE-001');
+      // Re-init should return current state, not overwrite
+      const state = runJSON('init CHORE-001 chore');
+      expect(state.currentStep).toBe(1);
+      expect(state.type).toBe('chore');
+    });
+
+    it('CHORE- prefix IDs pass validate_id', () => {
+      const state = runJSON('init CHORE-099 chore');
+      expect(state.id).toBe('CHORE-099');
     });
   });
 
@@ -260,15 +371,19 @@ describe('workflow-state.sh', () => {
       expect(state.lastResumedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     });
 
-    it('clears previous error on resume', () => {
+    it('clears previous error and resets failed step status on resume', () => {
       runJSON('init FEAT-001 feature');
       run('fail FEAT-001 "something broke"');
       const failedState = runJSON('status FEAT-001');
       expect(failedState.error).toBe('something broke');
+      const failedSteps = failedState.steps as Array<Record<string, unknown>>;
+      expect(failedSteps[0].status).toBe('failed');
 
       const resumedState = runJSON('resume FEAT-001');
       expect(resumedState.error).toBeNull();
       expect(resumedState.status).toBe('in-progress');
+      const resumedSteps = resumedState.steps as Array<Record<string, unknown>>;
+      expect(resumedSteps[0].status).toBe('pending');
     });
   });
 
