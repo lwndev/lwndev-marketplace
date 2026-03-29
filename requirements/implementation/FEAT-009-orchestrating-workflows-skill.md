@@ -78,7 +78,7 @@ The implementation has three components: a shell-based state management script, 
 
 ### Phase 2: Orchestrator Skill
 **Feature:** [FEAT-009](../features/FEAT-009-orchestrating-workflows-skill.md) | [#89](https://github.com/lwndev/lwndev-marketplace/issues/89)
-**Status:** Pending
+**Status:** ✅ Complete
 **Depends on:** Phase 1
 
 #### Rationale
@@ -149,7 +149,7 @@ The implementation has three components: a shell-based state management script, 
     - State script errors: surface the error message to the user
 
 #### Deliverables
-- [ ] `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` — full orchestrator skill with frontmatter and procedure
+- [x] `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` — full orchestrator skill with frontmatter and procedure
 
 ---
 

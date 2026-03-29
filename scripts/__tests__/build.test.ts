@@ -34,10 +34,10 @@ describe('build script validation', () => {
     expect(matches.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('should validate all 11 skills', () => {
+  it('should validate all 12 skills', () => {
     const validatedPattern = /Validating: /g;
     const matches = buildOutput.match(validatedPattern) ?? [];
-    expect(matches.length).toBe(11);
+    expect(matches.length).toBe(12);
   });
 });
 
@@ -80,7 +80,8 @@ describe('plugin structure', () => {
     expect(skillDirs).toContain('executing-qa');
     expect(skillDirs).toContain('reviewing-requirements');
     expect(skillDirs).toContain('finalizing-workflow');
-    expect(skillDirs.length).toBe(11);
+    expect(skillDirs).toContain('orchestrating-workflows');
+    expect(skillDirs.length).toBe(12);
   });
 
   it('should include SKILL.md in each skill directory', async () => {
