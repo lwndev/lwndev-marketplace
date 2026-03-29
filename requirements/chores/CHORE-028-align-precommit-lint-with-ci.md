@@ -30,11 +30,11 @@ Add full `npm run lint` and `npm run format:check` steps to the pre-commit hook 
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `In Progress`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-29
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#100](https://github.com/lwndev/lwndev-marketplace/pull/100)
 
 ## Notes
 
