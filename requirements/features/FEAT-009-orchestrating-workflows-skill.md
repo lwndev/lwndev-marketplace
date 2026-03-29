@@ -116,14 +116,11 @@ After all implementation phases complete, the orchestrator creates a PR:
 - Fork a subagent that creates the PR from the feature branch
 - Record PR number and branch in state via `scripts/workflow-state.sh set-pr {ID} {pr-number} {branch}`
 
-### FR-11: ID Allocation Delegation
+### FR-10: ID Allocation Delegation
 The orchestrator does not assign workflow IDs directly. ID allocation (e.g., `FEAT-009`, `CHORE-028`) is delegated to the step-1 sub-skill (`documenting-features`, `documenting-chores`, or `documenting-bugs`), which determines the next sequential ID by scanning existing requirement files. The orchestrator reads the assigned ID from the step-1 artifact and uses it for state file naming and all subsequent steps.
 
-### FR-10: Implementation Phase PR Suppression
-The `implementing-plan-phases` skill currently creates a PR at the end of each invocation. The orchestrator must prevent per-phase PR creation. Options include:
-- Pass a `--no-pr` flag or argument to the skill
-- Set an environment variable signal
-- Create the PR separately after the last phase (bypassing the skill's built-in PR step)
+### FR-11: Implementation Phase PR Suppression
+The `implementing-plan-phases` skill currently creates a PR at the end of each invocation. The orchestrator must prevent per-phase PR creation by appending explicit instructions to the Agent tool prompt (e.g., "Do NOT create a pull request at the end — the orchestrator handles PR creation separately"). This approach avoids modifying the sub-skill itself (consistent with NFR-3). The orchestrator creates the PR in a dedicated post-phase step (FR-9) instead.
 
 ## State Management
 
@@ -259,6 +256,8 @@ On load, the state script validates JSON integrity and required fields (`id`, `t
 8. **User invokes sub-skill standalone mid-workflow**: No conflict — sub-skills work independently; state tracks orchestrator-driven progress only
 9. **Multiple concurrent workflows**: State files are per-ID; no cross-workflow interference
 10. **Unrecognized or malformed ID prefix**: Error with message listing supported prefixes (`FEAT-`, `CHORE-`, `BUG-`) and expected format (e.g., `FEAT-003`, not `feat-003` or `FEAT003`)
+11. **Stale `.active` file**: If `.sdlc/workflows/.active` references a workflow that is `complete` or whose state file doesn't exist, the Stop hook cleans up `.active` and allows stop
+12. **`jq` not installed**: State script checks for `jq` availability on first invocation and exits with a clear error message and install instructions
 
 ## Testing Requirements
 
@@ -308,3 +307,6 @@ On load, the state script validates JSON integrity and required fields (`id`, `t
 - [ ] Step failures halt the chain with clear error reporting
 - [ ] Reconciliation steps (`reviewing-requirements` in test-plan and code-review modes) cannot be skipped or omitted from the step sequence
 - [ ] When orchestrated, `implementing-plan-phases` does not create a PR — PR is created in the dedicated post-phase step
+- [ ] The orchestrator reads the allocated ID from the step-1 artifact rather than assigning it directly
+- [ ] State script operations are idempotent — `advance` on a completed step is a no-op; `init` on an existing workflow returns current state
+- [ ] Malformed or incomplete state files produce a clear error with a suggestion to delete and restart
