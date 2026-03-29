@@ -52,7 +52,7 @@ Add chore workflow chain support to the existing `orchestrating-workflows` skill
 
 ### Phase 2: SKILL.md -- Chore Chain Documentation and Procedures
 **Feature:** [FEAT-010](../features/FEAT-010-orchestrate-chore-workflow-chain.md) | [#90](https://github.com/lwndev/lwndev-marketplace/issues/90)
-**Status:** Pending
+**Status:** ✅ Complete
 **Depends on:** Phase 1 (SKILL.md references `scripts/workflow-state.sh init {ID} chore` and the 9-step sequence)
 
 #### Rationale
@@ -99,7 +99,7 @@ Add chore workflow chain support to the existing `orchestrating-workflows` skill
 8. Validate skill passes `npm run validate`
 
 #### Deliverables
-- [ ] Updated `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` -- chore chain step sequence, new chore workflow procedure, chore step execution instructions, updated resume procedure, updated relationship section
+- [x] Updated `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` -- chore chain step sequence, new chore workflow procedure, chore step execution instructions, updated resume procedure, updated relationship section
 
 ---
 

@@ -222,7 +222,7 @@ cmd_advance() {
   local has_phase
   has_phase=$(jq --argjson step "$current_step" '.steps[$step] | has("phaseNumber")' "$file")
   if [[ "$has_phase" == "true" ]]; then
-    jq '.phases.completed = [.steps[] | select(has("phaseNumber") and .status == "complete")] | length' \
+    jq '.phases.completed = ([.steps[] | select(has("phaseNumber") and .status == "complete")] | length)' \
       "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
   fi
 
