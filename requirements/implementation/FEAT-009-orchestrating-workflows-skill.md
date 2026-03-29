@@ -213,7 +213,7 @@ The implementation has three components: a shell-based state management script, 
 
 ### Phase 4: Relocate Scripts to Skill Directory
 **Feature:** [FEAT-009](../features/FEAT-009-orchestrating-workflows-skill.md) | [#89](https://github.com/lwndev/lwndev-marketplace/issues/89)
-**Status:** Pending
+**Status:** ✅ Complete
 **Depends on:** Phase 1, Phase 3
 
 #### Rationale
@@ -237,9 +237,9 @@ The implementation has three components: a shell-based state management script, 
 10. Delete the old files from project-root `scripts/` directory
 
 #### Deliverables
-- [ ] `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-state.sh` — relocated and updated to use CWD
-- [ ] `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-stop-hook.sh` — relocated and updated to use CWD
-- [ ] Old `scripts/workflow-state.sh` and `scripts/workflow-stop-hook.sh` removed from project root
+- [x] `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-state.sh` — relocated and updated to use CWD
+- [x] `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-stop-hook.sh` — relocated and updated to use CWD
+- [x] Old `scripts/workflow-state.sh` and `scripts/workflow-stop-hook.sh` removed from project root
 
 ---
 

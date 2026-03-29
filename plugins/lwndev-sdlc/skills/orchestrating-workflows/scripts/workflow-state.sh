@@ -2,8 +2,7 @@
 set -euo pipefail
 
 SDLC_DIR=".sdlc/workflows"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PROJECT_ROOT="$(pwd)"
 
 # Ensure jq is available
 if ! command -v jq &>/dev/null; then
