@@ -101,7 +101,7 @@ Extract the `FEAT-NNN` portion from the filename. This ID is used for all subseq
 ### 4. Initialize State
 
 ```bash
-scripts/workflow-state.sh init {ID} feature
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh init {ID} feature
 ```
 
 Write the active workflow ID:
@@ -113,7 +113,7 @@ echo "{ID}" > .sdlc/workflows/.active
 ### 5. Advance Step 1 and Continue
 
 ```bash
-scripts/workflow-state.sh advance {ID} "requirements/features/{artifact-filename}"
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID} "requirements/features/{artifact-filename}"
 ```
 
 Continue to execute remaining steps starting from step 2.
@@ -145,7 +145,7 @@ Extract the `CHORE-NNN` portion from the filename. This ID is used for all subse
 ### 4. Initialize State
 
 ```bash
-scripts/workflow-state.sh init {ID} chore
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh init {ID} chore
 ```
 
 Write the active workflow ID:
@@ -157,7 +157,7 @@ echo "{ID}" > .sdlc/workflows/.active
 ### 5. Advance Step 1 and Continue
 
 ```bash
-scripts/workflow-state.sh advance {ID} "requirements/chores/{artifact-filename}"
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID} "requirements/chores/{artifact-filename}"
 ```
 
 Continue to execute remaining steps starting from step 2.
@@ -166,13 +166,13 @@ Continue to execute remaining steps starting from step 2.
 
 When the argument matches an existing ID (`FEAT-NNN`, `CHORE-NNN`, `BUG-NNN`):
 
-1. Read state: `scripts/workflow-state.sh status {ID}`
+1. Read state: `${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh status {ID}`
 2. Write active marker: `echo "{ID}" > .sdlc/workflows/.active`
 3. Determine chain type from the state file's `type` field (`feature` or `chore`)
 4. Check status:
-   - **paused** with `plan-approval` → (Feature chain only; chore chains have no plan-approval pause.) Ask "Ready to proceed with implementation?" If yes, call `scripts/workflow-state.sh resume {ID}` and advance past the pause step, then continue.
-   - **paused** with `pr-review` → Check PR status via `gh pr view {prNumber} --json state,reviews,mergeStateStatus`. If approved/mergeable, call `scripts/workflow-state.sh resume {ID}`, advance past the pause step, and continue. If changes requested, report the feedback and stay paused. If pending review, inform user and stay paused. (Applies to both feature and chore chains.)
-   - **failed** → Call `scripts/workflow-state.sh resume {ID}`. Retry the failed step.
+   - **paused** with `plan-approval` → (Feature chain only; chore chains have no plan-approval pause.) Ask "Ready to proceed with implementation?" If yes, call `${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh resume {ID}` and advance past the pause step, then continue.
+   - **paused** with `pr-review` → Check PR status via `gh pr view {prNumber} --json state,reviews,mergeStateStatus`. If approved/mergeable, call `${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh resume {ID}`, advance past the pause step, and continue. If changes requested, report the feedback and stay paused. If pending review, inform user and stay paused. (Applies to both feature and chore chains.)
+   - **failed** → Call `${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh resume {ID}`. Retry the failed step.
    - **in-progress** → Continue from the current step.
 5. Use the appropriate step sequence table (Feature Chain or Chore Chain) when determining the next step to execute.
 
@@ -191,13 +191,13 @@ These steps run directly in the orchestrator's conversation because they rely on
 **Step 5 — `documenting-qa`**: Read the SKILL.md content from `${CLAUDE_PLUGIN_ROOT}/skills/documenting-qa/SKILL.md`. Follow its instructions directly in this conversation, passing the workflow ID as argument. Expected artifact: `qa/test-plans/QA-plan-{ID}.md`. On completion:
 
 ```bash
-scripts/workflow-state.sh advance {ID} "qa/test-plans/QA-plan-{ID}.md"
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID} "qa/test-plans/QA-plan-{ID}.md"
 ```
 
 **Step 6+N+4 — `executing-qa`**: Read the SKILL.md content from `${CLAUDE_PLUGIN_ROOT}/skills/executing-qa/SKILL.md`. Follow its instructions directly in this conversation, passing the workflow ID as argument. Expected artifact: `qa/test-results/QA-results-{ID}.md`. On completion:
 
 ```bash
-scripts/workflow-state.sh advance {ID} "qa/test-results/QA-results-{ID}.md"
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID} "qa/test-results/QA-results-{ID}.md"
 ```
 
 #### Chore Chain Main-Context Steps (Steps 1, 3, 8)
@@ -207,13 +207,13 @@ scripts/workflow-state.sh advance {ID} "qa/test-results/QA-results-{ID}.md"
 **Step 3 — `documenting-qa`**: Same pattern as feature chain step 5. Read `${CLAUDE_PLUGIN_ROOT}/skills/documenting-qa/SKILL.md`, follow its instructions in this conversation, passing the workflow ID as argument. Expected artifact: `qa/test-plans/QA-plan-{ID}.md`. On completion:
 
 ```bash
-scripts/workflow-state.sh advance {ID} "qa/test-plans/QA-plan-{ID}.md"
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID} "qa/test-plans/QA-plan-{ID}.md"
 ```
 
 **Step 8 — `executing-qa`**: Same pattern as feature chain step 6+N+4. Read `${CLAUDE_PLUGIN_ROOT}/skills/executing-qa/SKILL.md`, follow its instructions in this conversation, passing the workflow ID as argument. Expected artifact: `qa/test-results/QA-results-{ID}.md`. On completion:
 
 ```bash
-scripts/workflow-state.sh advance {ID} "qa/test-results/QA-results-{ID}.md"
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID} "qa/test-results/QA-results-{ID}.md"
 ```
 
 ### Forked Steps
@@ -234,12 +234,12 @@ For all steps marked **fork** in the step sequence, use the Agent tool to delega
 
 4. Validate the expected artifact exists (use Glob to check). If the artifact is missing, record failure:
    ```bash
-   scripts/workflow-state.sh fail {ID} "Step N: expected artifact not found"
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh fail {ID} "Step N: expected artifact not found"
    ```
 
 5. On success, advance state:
    ```bash
-   scripts/workflow-state.sh advance {ID} "{artifact-path}"
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID} "{artifact-path}"
    ```
 
 ### Feature Chain Step-Specific Fork Instructions
@@ -271,8 +271,8 @@ Steps 2, 4, 7, and 9 follow the same fork pattern as the feature chain without c
 2. If the PR number is not in the output, detect it via: `gh pr list --head {branch} --json number --jq '.[0].number'`
 3. Record the PR metadata:
    ```bash
-   scripts/workflow-state.sh set-pr {ID} {pr-number} {branch}
-   scripts/workflow-state.sh advance {ID}
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh set-pr {ID} {pr-number} {branch}
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID}
    ```
 
 **Step 7 — `reviewing-requirements` (code-review reconciliation)**: Append `{ID} --pr {prNumber}` as argument. Same as feature chain step 6+N+3.
@@ -285,8 +285,8 @@ Steps 2, 4, 7, and 9 follow the same fork pattern as the feature chain without c
 
 **Step 4 — Plan Approval** (feature chain only):
 ```bash
-scripts/workflow-state.sh advance {ID}
-scripts/workflow-state.sh pause {ID} plan-approval
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID}
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh pause {ID} plan-approval
 ```
 Display: "Implementation plan created at `requirements/implementation/{ID}-*.md`. Review it and re-invoke `/orchestrating-workflows {ID}` to continue."
 
@@ -294,8 +294,8 @@ Halt execution. The user re-invokes the skill to resume.
 
 **Step 6+N+2 — PR Review**:
 ```bash
-scripts/workflow-state.sh advance {ID}
-scripts/workflow-state.sh pause {ID} pr-review
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID}
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh pause {ID} pr-review
 ```
 Display the PR number, link, and branch. Halt execution.
 
@@ -303,8 +303,8 @@ Display the PR number, link, and branch. Halt execution.
 
 **Step 6 — PR Review** (the only pause in the chore chain):
 ```bash
-scripts/workflow-state.sh advance {ID}
-scripts/workflow-state.sh pause {ID} pr-review
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID}
+${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh pause {ID} pr-review
 ```
 Display the PR number, link, and branch. Halt execution. The user re-invokes with `/orchestrating-workflows {ID}` to resume after review.
 
@@ -314,8 +314,8 @@ After step 6 (test-plan reconciliation) completes:
 
 1. Determine phase count and populate steps:
    ```bash
-   scripts/workflow-state.sh phase-count {ID}
-   scripts/workflow-state.sh populate-phases {ID} {count}
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh phase-count {ID}
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh populate-phases {ID} {count}
    ```
    This inserts N phase steps and 5 post-phase steps (Create PR, PR review, Reconcile post-review, Execute QA, Finalize) into the state file after the initial 6 steps.
 
@@ -326,12 +326,12 @@ After step 6 (test-plan reconciliation) completes:
 
 3. After each phase completes, advance state:
    ```bash
-   scripts/workflow-state.sh advance {ID}
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID}
    ```
 
 4. If a phase fails, halt the loop immediately:
    ```bash
-   scripts/workflow-state.sh fail {ID} "Phase {N} failed: {error-summary}"
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh fail {ID} "Phase {N} failed: {error-summary}"
    ```
    Do not proceed to subsequent phases or PR creation.
 
@@ -348,15 +348,15 @@ After all phases complete (step 6+N+1):
 
 2. Record PR metadata:
    ```bash
-   scripts/workflow-state.sh set-pr {ID} {pr-number} {branch}
-   scripts/workflow-state.sh advance {ID}
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh set-pr {ID} {pr-number} {branch}
+   ${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh advance {ID}
    ```
 
 3. Continue to step 6+N+2 (PR review pause).
 
 ## Error Handling
 
-- **Step failure**: Call `scripts/workflow-state.sh fail {ID} "{error message}"`. Display the error clearly. Halt execution. The user can re-invoke to retry.
+- **Step failure**: Call `${CLAUDE_SKILL_DIR}/scripts/workflow-state.sh fail {ID} "{error message}"`. Display the error clearly. Halt execution. The user can re-invoke to retry.
 - **Phase failure**: Halt the phase loop. Do not proceed to subsequent phases or PR creation. Call `fail` with the phase error.
 - **QA failure**: `executing-qa` handles retries internally via its own loop. If ultimately unfixable, the orchestrator records the failure.
 - **Sub-skill SKILL.md not found**: Display "Error: Skill '{skill-name}' not found at `${CLAUDE_PLUGIN_ROOT}/skills/{skill-name}/SKILL.md`. Check that the lwndev-sdlc plugin is installed." Call `fail`.

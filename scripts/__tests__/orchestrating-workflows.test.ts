@@ -52,6 +52,22 @@ describe('orchestrating-workflows skill', () => {
       );
     });
 
+    it('should use ${CLAUDE_SKILL_DIR} for workflow-state.sh references in body', () => {
+      // Extract body content (everything after the closing ---)
+      const bodyMatch = skillMd.match(/^---\s*\n[\s\S]*?---\s*\n([\s\S]*)$/);
+      expect(bodyMatch).not.toBeNull();
+      const body = bodyMatch![1];
+
+      // No bare scripts/workflow-state.sh references should remain in body
+      const bareRefs = body.match(/(?<!\$\{CLAUDE_SKILL_DIR\}\/)scripts\/workflow-state\.sh/g);
+      expect(bareRefs).toBeNull();
+
+      // All references should use ${CLAUDE_SKILL_DIR}/ prefix
+      const prefixedRefs = body.match(/\$\{CLAUDE_SKILL_DIR\}\/scripts\/workflow-state\.sh/g);
+      expect(prefixedRefs).not.toBeNull();
+      expect(prefixedRefs!.length).toBe(29);
+    });
+
     it('should include "When to Use This Skill" section', () => {
       expect(skillMd).toContain('## When to Use This Skill');
     });
