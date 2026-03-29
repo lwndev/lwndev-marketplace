@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
-import { access, rm, readFile, writeFile, mkdir } from 'node:fs/promises';
+import { access, rm, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { execSync } from 'node:child_process';
 import { PROJECT_SKILLS_DIR, PROJECT_AGENTS_DIR } from '../lib/constants.js';
@@ -65,9 +65,10 @@ describe('test-skill script', () => {
     it('should list available skills on error', () => {
       try {
         run('nonexistent-skill-xyz');
+        expect.fail('should have thrown');
       } catch (err: unknown) {
         const error = err as { stdout: string };
-        expect(error.stdout).toContain('Available skills');
+        expect(error.stdout).toContain('Available skill');
       }
     });
   });
@@ -124,6 +125,19 @@ describe('test-skill script', () => {
     it('should handle removing nonexistent agent gracefully', () => {
       const output = run(`${TEST_AGENT} --agent --remove`);
       expect(output).toContain('Nothing to remove');
+    });
+  });
+
+  describe('help', () => {
+    it('should print usage and exit 0 with --help', () => {
+      const output = execSync('tsx scripts/test-skill.ts --help', {
+        stdio: 'pipe',
+        encoding: 'utf-8',
+      });
+      expect(output).toContain('Usage:');
+      expect(output).toContain('--plugin');
+      expect(output).toContain('--agent');
+      expect(output).toContain('--remove');
     });
   });
 

@@ -144,11 +144,9 @@ export async function testSkill(args: ParsedArgs): Promise<void> {
       ? getPluginAgentsDir(args.plugin)
       : getPluginSkillsDir(args.plugin);
     const available = await listAvailable(sourceDir, args.agent);
-    printError(`${type} '${args.name}' not found in plugin '${args.plugin}'`);
-    if (available.length > 0) {
-      console.log(`  Available ${type}s: ${available.join(', ')}`);
-    }
-    process.exit(1);
+    const availableMsg =
+      available.length > 0 ? `\n  Available ${type}s: ${available.join(', ')}` : '';
+    throw new Error(`${type} '${args.name}' not found in plugin '${args.plugin}'${availableMsg}`);
   }
 
   if (await exists(dest)) {
@@ -173,9 +171,7 @@ export async function testSkill(args: ParsedArgs): Promise<void> {
   printInfo(`Dest:   ${dest}`);
   console.log('');
   printInfo(`Invoke /${args.name} to test. When done:`);
-  printInfo(
-    `  tsx scripts/test-skill.ts ${args.name}${args.agent ? ' --agent' : ''} --remove`,
-  );
+  printInfo(`  tsx scripts/test-skill.ts ${args.name}${args.agent ? ' --agent' : ''} --remove`);
 }
 
 async function main(): Promise<void> {
