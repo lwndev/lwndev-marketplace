@@ -33,11 +33,11 @@ Update the `orchestrating-workflows` skill to parse findings returned by `review
 
 ## Completion
 
-**Status:** `Pending`
+**Status:** `In Progress`
 
-**Completed:** YYYY-MM-DD
+**Completed:** 2026-03-29
 
-**Pull Request:** [#N](https://github.com/lwndev/lwndev-marketplace/pull/N)
+**Pull Request:** [#109](https://github.com/lwndev/lwndev-marketplace/pull/109)
 
 ## Notes
 
