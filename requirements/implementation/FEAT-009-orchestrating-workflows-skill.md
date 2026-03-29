@@ -211,6 +211,38 @@ The implementation has three components: a shell-based state management script, 
 
 ---
 
+### Phase 4: Relocate Scripts to Skill Directory
+**Feature:** [FEAT-009](../features/FEAT-009-orchestrating-workflows-skill.md) | [#89](https://github.com/lwndev/lwndev-marketplace/issues/89)
+**Status:** Pending
+**Depends on:** Phase 1, Phase 3
+
+#### Rationale
+- **Distribution requirement**: The Agent Skills specification requires scripts to be bundled in a `scripts/` subdirectory within the skill directory itself. Scripts at the project-root `scripts/` folder are not distributed when the plugin is installed via `/plugin install`.
+- **Relative path convention**: Skills reference scripts via relative paths from the skill directory root (e.g., `scripts/workflow-state.sh`). The SKILL.md already uses this convention — the physical files just need to match.
+- **CWD-based project paths**: The scripts must use the current working directory (the user's project) for project-relative paths (`.sdlc/`, `requirements/`) rather than computing paths relative to the script's own location, since the script will live in the plugin cache directory at runtime.
+
+#### Implementation Steps
+1. Create `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/` directory
+2. Move `scripts/workflow-state.sh` → `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-state.sh`
+3. Move `scripts/workflow-stop-hook.sh` → `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-stop-hook.sh`
+4. Update `workflow-state.sh` to use CWD for project-relative paths:
+   - Replace `PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"` with `PROJECT_ROOT="$(pwd)"` — the CWD is always the user's project when invoked from a skill
+   - Remove or simplify `SCRIPT_DIR` since it's no longer needed for PROJECT_ROOT derivation
+5. Update `workflow-stop-hook.sh` to use CWD for project-relative paths:
+   - Replace `PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"` with `PROJECT_ROOT="$(pwd)"`
+6. Verify the SKILL.md script references (`scripts/workflow-state.sh`, `scripts/workflow-stop-hook.sh`) remain correct — they already use relative paths from the skill directory root
+7. Verify the Stop hook frontmatter command (`command: "scripts/workflow-stop-hook.sh"`) resolves correctly
+8. Run `npm run validate` to confirm the skill still passes validation
+9. Run `npm test` to confirm no regressions
+10. Delete the old files from project-root `scripts/` directory
+
+#### Deliverables
+- [ ] `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-state.sh` — relocated and updated to use CWD
+- [ ] `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-stop-hook.sh` — relocated and updated to use CWD
+- [ ] Old `scripts/workflow-state.sh` and `scripts/workflow-stop-hook.sh` removed from project root
+
+---
+
 ## Shared Infrastructure
 
 ### State File Convention
@@ -277,13 +309,12 @@ The orchestrator appends a "skip PR creation" instruction to the Agent tool prom
 plugins/lwndev-sdlc/
 └── skills/
     └── orchestrating-workflows/
-        └── SKILL.md              # Phase 2: orchestrator skill
+        ├── SKILL.md              # Phase 2: orchestrator skill
+        └── scripts/              # Phase 4: relocated from project root
+            ├── workflow-state.sh     # Phase 1 → Phase 4: state management
+            └── workflow-stop-hook.sh # Phase 3 → Phase 4: Stop hook
 
-scripts/
-├── workflow-state.sh             # Phase 1: state management
-└── workflow-stop-hook.sh         # Phase 3: Stop hook
-
-.sdlc/                            # gitignored
+.sdlc/                            # gitignored, in user's project root
 └── workflows/
     ├── .active                   # Phase 3: active workflow tracking
     ├── FEAT-009.json             # per-workflow state files

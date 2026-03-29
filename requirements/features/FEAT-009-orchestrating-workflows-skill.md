@@ -128,7 +128,7 @@ The `implementing-plan-phases` skill currently creates a PR at the end of each i
 ## State Management
 
 ### State Script: `scripts/workflow-state.sh`
-Shell script handling all state file CRUD, called by both the orchestrator skill and the Stop hook.
+Shell script bundled within the skill directory at `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-state.sh`. Referenced in SKILL.md as `scripts/workflow-state.sh` (relative to the skill directory root per the Agent Skills specification). The script uses the current working directory (the user's project) for all project-relative paths (`.sdlc/`, `requirements/`). Called by both the orchestrator skill and the Stop hook.
 
 | Command | Description |
 |---------|-------------|
@@ -290,7 +290,7 @@ On load, the state script validates JSON integrity and required fields (`id`, `t
 ## Acceptance Criteria
 
 - [ ] `orchestrating-workflows` skill exists with frontmatter, description, and Stop hook
-- [ ] `scripts/workflow-state.sh` handles all commands (`init`, `status`, `advance`, `pause`, `resume`, `fail`, `complete`, `set-pr`, `phase-count`, `phase-status`)
+- [ ] `scripts/workflow-state.sh` (bundled in skill directory) handles all commands (`init`, `status`, `advance`, `pause`, `resume`, `fail`, `complete`, `set-pr`, `phase-count`, `phase-status`)
 - [ ] State files written to `.sdlc/workflows/{ID}.json`; `.sdlc/` is gitignored
 - [ ] Step 1, `documenting-qa`, and `executing-qa` run in main context; all other steps forked via Agent tool
 - [ ] Forked steps read SKILL.md content and delegate as subagent task prompts
