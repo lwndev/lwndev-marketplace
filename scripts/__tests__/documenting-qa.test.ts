@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
+import { execSync } from 'node:child_process';
 import { readFile, access } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { join } from 'node:path';
@@ -125,7 +126,6 @@ describe('documenting-qa skill', () => {
   describe('stop hook behavior', () => {
     function runHook(stdinJson: string): { exitCode: number; stderr: string } {
       try {
-        const { execSync } = require('node:child_process');
         execSync(`echo '${stdinJson.replace(/'/g, "'\\''")}' | bash ${STOP_HOOK_PATH}`, {
           encoding: 'utf-8',
           stdio: ['pipe', 'pipe', 'pipe'],
@@ -138,7 +138,9 @@ describe('documenting-qa skill', () => {
     }
 
     it('exits 0 when stop_hook_active is true', () => {
-      const result = runHook(JSON.stringify({ stop_hook_active: true, last_assistant_message: '' }));
+      const result = runHook(
+        JSON.stringify({ stop_hook_active: true, last_assistant_message: '' })
+      );
       expect(result.exitCode).toBe(0);
     });
 
