@@ -1,11 +1,14 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { readFile } from 'node:fs/promises';
+import { execSync } from 'node:child_process';
+import { readFile, access } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { join } from 'node:path';
 import { validate, type DetailedValidateResult } from 'ai-skills-manager';
 
 const SKILL_DIR = 'plugins/lwndev-sdlc/skills/documenting-qa';
 const SKILL_MD_PATH = join(SKILL_DIR, 'SKILL.md');
 const TEMPLATE_PATH = join(SKILL_DIR, 'assets', 'test-plan-template.md');
+const STOP_HOOK_PATH = join(SKILL_DIR, 'scripts', 'stop-hook.sh');
 
 describe('documenting-qa skill', () => {
   let skillMd: string;
@@ -99,19 +102,87 @@ describe('documenting-qa skill', () => {
       expect(skillMd).toMatch(/^---\s*\n[\s\S]*?hooks:[\s\S]*?Stop:[\s\S]*?---/);
     });
 
-    it('should use type: prompt for the stop hook', () => {
+    it('should use type: command for the stop hook', () => {
       const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('type: prompt');
+      expect(frontmatter).toContain('type: command');
     });
 
-    it('should use haiku model for the stop hook', () => {
-      const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('model: haiku');
+    it('should use ${CLAUDE_PLUGIN_ROOT} in Stop hook command path', () => {
+      expect(skillMd).toMatch(
+        /^---\s*\n[\s\S]*?command:\s*.*\$\{CLAUDE_PLUGIN_ROOT\}\/skills\/documenting-qa\/scripts\/stop-hook\.sh[\s\S]*?---/
+      );
     });
 
-    it('should check stop_hook_active to prevent infinite loops', () => {
+    it('should not use type: prompt (replaced by command hook)', () => {
       const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('stop_hook_active');
+      expect(frontmatter).not.toContain('type: prompt');
+    });
+
+    it('should have an executable stop-hook.sh script', async () => {
+      await expect(access(STOP_HOOK_PATH, constants.X_OK)).resolves.toBeUndefined();
+    });
+  });
+
+  describe('stop hook behavior', () => {
+    function runHook(stdinJson: string): { exitCode: number; stderr: string } {
+      try {
+        execSync(`echo '${stdinJson.replace(/'/g, "'\\''")}' | bash ${STOP_HOOK_PATH}`, {
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+        });
+        return { exitCode: 0, stderr: '' };
+      } catch (err: unknown) {
+        const e = err as { status: number; stderr?: string };
+        return { exitCode: e.status, stderr: e.stderr ?? '' };
+      }
+    }
+
+    it('exits 0 when stop_hook_active is true', () => {
+      const result = runHook(
+        JSON.stringify({ stop_hook_active: true, last_assistant_message: '' })
+      );
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('exits 0 when plan reference and completion indicator are both present', () => {
+      const result = runHook(
+        JSON.stringify({
+          stop_hook_active: false,
+          last_assistant_message:
+            'Test plan saved to qa/test-plans/QA-plan-FEAT-003.md. The qa-verifier subagent confirmed completeness.',
+        })
+      );
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('exits 2 when only plan reference is present without completion indicator', () => {
+      const result = runHook(
+        JSON.stringify({
+          stop_hook_active: false,
+          last_assistant_message: 'Working on QA-plan-FEAT-003, still in progress.',
+        })
+      );
+      expect(result.exitCode).toBe(2);
+    });
+
+    it('exits 2 when neither plan reference nor completion indicator is present', () => {
+      const result = runHook(
+        JSON.stringify({
+          stop_hook_active: false,
+          last_assistant_message: 'I am analyzing the requirements document.',
+        })
+      );
+      expect(result.exitCode).toBe(2);
+    });
+
+    it('exits 0 on empty stdin', () => {
+      const result = runHook('');
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('exits 0 on malformed JSON', () => {
+      const result = runHook('not json at all');
+      expect(result.exitCode).toBe(0);
     });
   });
 

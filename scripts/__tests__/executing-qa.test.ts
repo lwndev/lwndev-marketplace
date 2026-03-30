@@ -1,11 +1,14 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { readFile } from 'node:fs/promises';
+import { execSync } from 'node:child_process';
+import { readFile, access } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { join } from 'node:path';
 import { validate, type DetailedValidateResult } from 'ai-skills-manager';
 
 const SKILL_DIR = 'plugins/lwndev-sdlc/skills/executing-qa';
 const SKILL_MD_PATH = join(SKILL_DIR, 'SKILL.md');
 const TEMPLATE_PATH = join(SKILL_DIR, 'assets', 'test-results-template.md');
+const STOP_HOOK_PATH = join(SKILL_DIR, 'scripts', 'stop-hook.sh');
 
 describe('executing-qa skill', () => {
   let skillMd: string;
@@ -100,25 +103,115 @@ describe('executing-qa skill', () => {
       expect(skillMd).toMatch(/^---\s*\n[\s\S]*?hooks:[\s\S]*?Stop:[\s\S]*?---/);
     });
 
-    it('should use type: prompt for the stop hook', () => {
+    it('should use type: command for the stop hook', () => {
       const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('type: prompt');
+      expect(frontmatter).toContain('type: command');
     });
 
-    it('should use haiku model for the stop hook', () => {
-      const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('model: haiku');
+    it('should use ${CLAUDE_PLUGIN_ROOT} in Stop hook command path', () => {
+      expect(skillMd).toMatch(
+        /^---\s*\n[\s\S]*?command:\s*.*\$\{CLAUDE_PLUGIN_ROOT\}\/skills\/executing-qa\/scripts\/stop-hook\.sh[\s\S]*?---/
+      );
     });
 
-    it('should check stop_hook_active to prevent infinite loops', () => {
+    it('should not use type: prompt (replaced by command hook)', () => {
       const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('stop_hook_active');
+      expect(frontmatter).not.toContain('type: prompt');
     });
 
-    it('should handle both verification and reconciliation phases', () => {
-      const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('QA verification');
-      expect(frontmatter).toContain('reconciliation');
+    it('should have an executable stop-hook.sh script', async () => {
+      await expect(access(STOP_HOOK_PATH, constants.X_OK)).resolves.toBeUndefined();
+    });
+  });
+
+  describe('stop hook behavior', () => {
+    function runHook(stdinJson: string): { exitCode: number; stderr: string } {
+      try {
+        execSync(`echo '${stdinJson.replace(/'/g, "'\\''")}' | bash ${STOP_HOOK_PATH}`, {
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+        });
+        return { exitCode: 0, stderr: '' };
+      } catch (err: unknown) {
+        const e = err as { status: number; stderr?: string };
+        return { exitCode: e.status, stderr: e.stderr ?? '' };
+      }
+    }
+
+    it('exits 0 when stop_hook_active is true', () => {
+      const result = runHook(
+        JSON.stringify({ stop_hook_active: true, last_assistant_message: '' })
+      );
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('exits 0 when both verification and reconciliation are complete', () => {
+      const result = runHook(
+        JSON.stringify({
+          stop_hook_active: false,
+          last_assistant_message:
+            'QA verification passed with all entries clean. Documentation reconciliation is complete. Results saved to qa/test-results/QA-results-FEAT-003.md.',
+        })
+      );
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('exits 2 when only verification is complete (no reconciliation)', () => {
+      const result = runHook(
+        JSON.stringify({
+          stop_hook_active: false,
+          last_assistant_message: 'QA verification passed. Now starting reconciliation.',
+        })
+      );
+      expect(result.exitCode).toBe(2);
+      expect(result.stderr).toContain('reconciliation');
+    });
+
+    it('exits 2 when only reconciliation is complete (no verification)', () => {
+      const result = runHook(
+        JSON.stringify({
+          stop_hook_active: false,
+          last_assistant_message: 'Documentation reconciliation is complete.',
+        })
+      );
+      expect(result.exitCode).toBe(2);
+      expect(result.stderr).toContain('verification');
+    });
+
+    it('exits 0 when results file is mentioned with verification indicator', () => {
+      const result = runHook(
+        JSON.stringify({
+          stop_hook_active: false,
+          last_assistant_message: 'All entries passed verification. Saved QA-results-FEAT-003.md.',
+        })
+      );
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('exits 2 when neither verification nor reconciliation is detected', () => {
+      const result = runHook(
+        JSON.stringify({
+          stop_hook_active: false,
+          last_assistant_message: 'I am reading the test plan.',
+        })
+      );
+      expect(result.exitCode).toBe(2);
+    });
+
+    it('exits 0 on empty stdin', () => {
+      const result = runHook('');
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('exits 0 on malformed JSON', () => {
+      const result = runHook('not json at all');
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('script checks for both verification and reconciliation patterns', async () => {
+      const scriptContent = await readFile(STOP_HOOK_PATH, 'utf-8');
+      expect(scriptContent).toContain('HAS_VERIFICATION');
+      expect(scriptContent).toContain('HAS_RECONCILIATION');
     });
   });
 
