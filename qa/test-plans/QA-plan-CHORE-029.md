@@ -16,8 +16,8 @@ Tests that already exist and must continue to pass (regression baseline):
 
 | Test File | Description | Status |
 |-----------|-------------|--------|
-| `scripts/__tests__/workflow-state.test.ts` | All workflow-state.sh commands (init, advance, pause, resume, fail, complete, set-pr, populate-phases, phase-count) | PENDING |
-| `scripts/__tests__/orchestrating-workflows.test.ts` | SKILL.md structure validation (frontmatter, sections, `${CLAUDE_SKILL_DIR}` references) | PENDING |
+| `scripts/__tests__/workflow-state.test.ts` | All workflow-state.sh commands (init, advance, pause, resume, fail, complete, set-pr, populate-phases, phase-count) | PASS |
+| `scripts/__tests__/orchestrating-workflows.test.ts` | SKILL.md structure validation (frontmatter, sections, `${CLAUDE_SKILL_DIR}` references) | PASS |
 
 ## New Test Analysis
 
@@ -25,10 +25,10 @@ New or modified tests that should be created or verified during QA execution:
 
 | Test Description | Target File(s) | Requirement Ref | Priority | Status |
 |-----------------|----------------|-----------------|----------|--------|
-| `pause` command accepts `review-findings` as a valid reason | `scripts/__tests__/workflow-state.test.ts` | AC7 | High | -- |
-| `resume` from `review-findings` pause sets status to `in-progress` and clears pauseReason | `scripts/__tests__/workflow-state.test.ts` | AC7 | High | -- |
-| Existing `pause` tests still reject invalid reasons | `scripts/__tests__/workflow-state.test.ts` | AC7 (regression) | Medium | -- |
-| SKILL.md `${CLAUDE_SKILL_DIR}` reference count test must be updated to reflect new references added by findings-handling instructions | `scripts/__tests__/orchestrating-workflows.test.ts` | AC1 | Medium | -- |
+| `pause` command accepts `review-findings` as a valid reason | `scripts/__tests__/workflow-state.test.ts` | AC7 | High | PASS |
+| `resume` from `review-findings` pause sets status to `in-progress` and clears pauseReason | `scripts/__tests__/workflow-state.test.ts` | AC7 | High | PASS |
+| Existing `pause` tests still reject invalid reasons | `scripts/__tests__/workflow-state.test.ts` | AC7 (regression) | Medium | PASS |
+| SKILL.md `${CLAUDE_SKILL_DIR}` reference count test must be updated to reflect new references added by findings-handling instructions | `scripts/__tests__/orchestrating-workflows.test.ts` | AC1 | Medium | PASS |
 
 ## Coverage Gap Analysis
 
@@ -47,20 +47,20 @@ Traceability from acceptance criteria to implementation:
 
 | Requirement | Description | Expected Code Path | Verification Method | Status |
 |-------------|-------------|-------------------|-------------------|--------|
-| AC1 | Orchestrator parses error/warning/info findings summary from each reviewing-requirements subagent (feature steps 2, 6, 6+N+3; chore steps 2, 4, 7) | `orchestrating-workflows/SKILL.md` — Forked Steps section and/or step-specific fork instructions for all reviewing-requirements invocations | Code review: verify parsing instructions exist for all 6 reviewing-requirements steps across both chains | -- |
-| AC2 | Errors block progression, surfaced to user | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions specify blocking advancement and displaying findings when error count > 0 | -- |
-| AC3 | Warnings/info presented with inline confirmation prompt before advancing | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions specify inline prompt with user confirmation for warnings/info | -- |
-| AC4 | Auto-fixable corrections applied when user opts in | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions describe offering auto-fixable items and applying them via Edit tool in main context | -- |
-| AC5 | Re-run review after fixes (max 1 re-run; pause on persistent errors) | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions spawn a new reviewing-requirements fork after fixes, cap at 1 re-run, and pause with `review-findings` if errors persist | -- |
-| AC6 | User can skip warnings and continue without fixes | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions offer skip/continue option for warnings | -- |
-| AC7 | Workflow state tracks review-gate pauses and resumes | `workflow-state.sh` — `cmd_pause` function | Automated test: `pause` accepts `review-findings`; `resume` clears it | -- |
+| AC1 | Orchestrator parses error/warning/info findings summary from each reviewing-requirements subagent (feature steps 2, 6, 6+N+3; chore steps 2, 4, 7) | `orchestrating-workflows/SKILL.md` — Forked Steps section and/or step-specific fork instructions for all reviewing-requirements invocations | Code review: verify parsing instructions exist for all 6 reviewing-requirements steps across both chains | PASS |
+| AC2 | Errors block progression, surfaced to user | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions specify blocking advancement and displaying findings when error count > 0 | PASS |
+| AC3 | Warnings/info presented with inline confirmation prompt before advancing | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions specify inline prompt with user confirmation for warnings/info | PASS |
+| AC4 | Auto-fixable corrections applied when user opts in | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions describe offering auto-fixable items and applying them via Edit tool in main context | PASS |
+| AC5 | Re-run review after fixes (max 1 re-run; pause on persistent errors) | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions spawn a new reviewing-requirements fork after fixes, cap at 1 re-run, and pause with `review-findings` if errors persist | PASS |
+| AC6 | User can skip warnings and continue without fixes | `orchestrating-workflows/SKILL.md` — findings-handling flow | Code review: verify instructions offer skip/continue option for warnings | PASS |
+| AC7 | Workflow state tracks review-gate pauses and resumes | `workflow-state.sh` — `cmd_pause` function | Automated test: `pause` accepts `review-findings`; `resume` clears it | PASS |
 
 ## Deliverable Verification
 
 | Deliverable | Source | Expected Path | Status |
 |-------------|--------|---------------|--------|
-| Updated orchestrating-workflows SKILL.md with findings-handling instructions | CHORE-029 | `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` | -- |
-| Updated workflow-state.sh with `review-findings` pause reason | CHORE-029 | `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-state.sh` | -- |
+| Updated orchestrating-workflows SKILL.md with findings-handling instructions | CHORE-029 | `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` | PASS |
+| Updated workflow-state.sh with `review-findings` pause reason | CHORE-029 | `plugins/lwndev-sdlc/skills/orchestrating-workflows/scripts/workflow-state.sh` | PASS |
 
 ## Plan Completeness Checklist
 
