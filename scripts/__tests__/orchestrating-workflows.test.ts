@@ -65,7 +65,7 @@ describe('orchestrating-workflows skill', () => {
       // All references should use ${CLAUDE_SKILL_DIR}/ prefix
       const prefixedRefs = body.match(/\$\{CLAUDE_SKILL_DIR\}\/scripts\/workflow-state\.sh/g);
       expect(prefixedRefs).not.toBeNull();
-      expect(prefixedRefs!.length).toBe(33);
+      expect(prefixedRefs!.length).toBe(41);
     });
 
     it('should include "When to Use This Skill" section', () => {
@@ -544,6 +544,170 @@ describe('integration tests', () => {
       expect(result.exitCode).toBe(0);
     });
   });
+
+  describe('bug chain lifecycle', () => {
+    it('init → advance through all 9 steps → pause at step 5 → resume → advance remaining → complete', () => {
+      const initState = stateJSON('init BUG-001 bug');
+      expect(initState.type).toBe('bug');
+      expect(initState.steps).toHaveLength(9);
+
+      // Advance steps 0-4
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+
+      // At step 5 (PR review pause)
+      const atPause = stateJSON('status BUG-001');
+      expect(atPause.currentStep).toBe(5);
+      const pauseSteps = atPause.steps as Array<Record<string, unknown>>;
+      expect(pauseSteps[5].name).toBe('PR review');
+      expect(pauseSteps[5].context).toBe('pause');
+
+      // Pause and resume
+      stateCmd('pause BUG-001 pr-review');
+      const pausedState = stateJSON('status BUG-001');
+      expect(pausedState.status).toBe('paused');
+      expect(pausedState.pauseReason).toBe('pr-review');
+
+      const resumedState = stateJSON('resume BUG-001');
+      expect(resumedState.status).toBe('in-progress');
+      expect(resumedState.lastResumedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+
+      // Advance remaining steps 5-8
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+
+      // Complete
+      const completedState = stateJSON('complete BUG-001');
+      expect(completedState.status).toBe('complete');
+      expect(completedState.completedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+
+      const finalSteps = completedState.steps as Array<Record<string, unknown>>;
+      for (let i = 0; i < 9; i++) {
+        expect(finalSteps[i].status).toBe('complete');
+      }
+    });
+  });
+
+  describe('bug chain PR metadata', () => {
+    it('set-pr records metadata accessible via status for bug chain', () => {
+      stateJSON('init BUG-001 bug');
+      stateCmd('set-pr BUG-001 77 fix/BUG-001-test');
+
+      const state = stateJSON('status BUG-001');
+      expect(state.prNumber).toBe(77);
+      expect(state.branch).toBe('fix/BUG-001-test');
+    });
+  });
+
+  describe('bug chain has no phase loop', () => {
+    it('state file has exactly 9 steps from init with no dynamic insertion needed', () => {
+      const state = stateJSON('init BUG-001 bug');
+      const steps = state.steps as Array<Record<string, unknown>>;
+
+      expect(steps).toHaveLength(9);
+
+      const expectedNames = [
+        'Document bug',
+        'Review requirements (standard)',
+        'Document QA test plan',
+        'Reconcile test plan',
+        'Execute bug fix',
+        'PR review',
+        'Reconcile post-review',
+        'Execute QA',
+        'Finalize',
+      ];
+      for (let i = 0; i < 9; i++) {
+        expect(steps[i].name).toBe(expectedNames[i]);
+      }
+    });
+  });
+
+  describe('bug chain has no plan-approval pause', () => {
+    it('bug chain has only pr-review pause step; no plan-approval step exists', () => {
+      const state = stateJSON('init BUG-001 bug');
+      const steps = state.steps as Array<Record<string, unknown>>;
+
+      const pauseSteps = steps.filter((s) => s.context === 'pause');
+      expect(pauseSteps).toHaveLength(1);
+      expect(pauseSteps[0].name).toBe('PR review');
+
+      const planApprovalSteps = steps.filter(
+        (s) =>
+          s.name === 'Plan approval' ||
+          s.name === 'plan-approval' ||
+          (s as Record<string, unknown>).skill === 'plan-approval'
+      );
+      expect(planApprovalSteps).toHaveLength(0);
+    });
+  });
+
+  describe('bug chain error recovery', () => {
+    it('fail at step 4 (executing-bug-fixes) → resume → retry → advance succeeds', () => {
+      stateJSON('init BUG-001 bug');
+
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+      stateCmd('advance BUG-001');
+
+      const atStep4 = stateJSON('status BUG-001');
+      expect(atStep4.currentStep).toBe(4);
+      const steps4 = atStep4.steps as Array<Record<string, unknown>>;
+      expect(steps4[4].name).toBe('Execute bug fix');
+      expect(steps4[4].skill).toBe('executing-bug-fixes');
+
+      const failState = stateJSON('fail BUG-001 "Bug fix execution crashed"');
+      expect(failState.status).toBe('failed');
+      expect(failState.error).toBe('Bug fix execution crashed');
+
+      const resumeState = stateJSON('resume BUG-001');
+      expect(resumeState.status).toBe('in-progress');
+      expect(resumeState.lastResumedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+
+      const retryState = stateJSON('advance BUG-001');
+      expect(retryState.currentStep).toBe(5);
+      const retrySteps = retryState.steps as Array<Record<string, unknown>>;
+      expect(retrySteps[4].status).toBe('complete');
+    });
+  });
+
+  describe('bug chain stop hook behavior', () => {
+    it('exits 2 for in-progress bug chain', () => {
+      stateJSON('init BUG-001 bug');
+      mkdirSync(join(testDir, '.sdlc/workflows'), { recursive: true });
+      writeFileSync(join(testDir, '.sdlc/workflows/.active'), 'BUG-001');
+
+      const result = runHook();
+      expect(result.exitCode).toBe(2);
+      expect(result.stderr).toContain('in-progress');
+    });
+
+    it('exits 0 for paused bug chain', () => {
+      stateJSON('init BUG-001 bug');
+      stateCmd('pause BUG-001 pr-review');
+      mkdirSync(join(testDir, '.sdlc/workflows'), { recursive: true });
+      writeFileSync(join(testDir, '.sdlc/workflows/.active'), 'BUG-001');
+
+      const result = runHook();
+      expect(result.exitCode).toBe(0);
+    });
+
+    it('exits 0 for complete bug chain', () => {
+      stateJSON('init BUG-001 bug');
+      stateCmd('complete BUG-001');
+      mkdirSync(join(testDir, '.sdlc/workflows'), { recursive: true });
+      writeFileSync(join(testDir, '.sdlc/workflows/.active'), 'BUG-001');
+
+      const result = runHook();
+      expect(result.exitCode).toBe(0);
+    });
+  });
 });
 
 // --- Chore Chain SKILL.md Validation Tests ---
@@ -576,5 +740,37 @@ describe('orchestrating-workflows SKILL.md chore chain content', () => {
     expect(relationshipSection).toContain('Chore chain');
     expect(relationshipSection).toContain('documenting-chores');
     expect(relationshipSection).toContain('executing-chores');
+  });
+});
+
+// --- Bug Chain SKILL.md Validation Tests ---
+
+describe('orchestrating-workflows SKILL.md bug chain content', () => {
+  let skillMd: string;
+
+  beforeAll(async () => {
+    skillMd = await readFile(SKILL_MD_PATH, 'utf-8');
+  });
+
+  it('should contain "Bug Chain Step Sequence" section', () => {
+    expect(skillMd).toContain('## Bug Chain Step Sequence');
+  });
+
+  it('should reference documenting-bugs sub-skill', () => {
+    expect(skillMd).toContain('documenting-bugs');
+  });
+
+  it('should reference executing-bug-fixes sub-skill', () => {
+    expect(skillMd).toContain('executing-bug-fixes');
+  });
+
+  it('should document bug chain in "Relationship to Other Skills" section', () => {
+    const relationshipIdx = skillMd.indexOf('## Relationship to Other Skills');
+    expect(relationshipIdx).toBeGreaterThan(-1);
+    const relationshipSection = skillMd.slice(relationshipIdx);
+
+    expect(relationshipSection).toContain('Bug chain');
+    expect(relationshipSection).toContain('documenting-bugs');
+    expect(relationshipSection).toContain('executing-bug-fixes');
   });
 });
