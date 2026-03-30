@@ -346,6 +346,8 @@ git push
 
 ## Step 10: Update Plan Status
 
+**Prerequisite:** Step 9 commit and push must have succeeded before updating status. Do not mark a phase complete if changes are uncommitted or unpushed.
+
 Edit the implementation plan file to mark the phase complete:
 
 **Change:**
