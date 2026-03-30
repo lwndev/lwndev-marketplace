@@ -266,7 +266,7 @@ ls -la tests/unit/validators/file-exists.test.ts
 
 ## Step 9: Commit and Push Changes
 
-After verification passes, commit all changes and push to the remote. This preserves a per-phase audit trail in git and ensures work is not lost between phases.
+**Always commit and push after verification — do not ask the user for confirmation.** This is a mandatory step, not an optional one. Commit all changes and push to the remote. This preserves a per-phase audit trail in git and ensures work is not lost between phases.
 
 ### Stage Changed Files
 
