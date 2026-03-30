@@ -38,7 +38,7 @@ Drive an entire SDLC workflow chain through a single skill invocation. The orche
 7. **Feature chain**: Pause at plan approval (step 4) and PR review (step 6+N+2)
 8. **Chore chain**: Pause at PR review only (step 6) — no plan-approval pause
 9. **Bug chain**: Pause at PR review only (step 6) — no plan-approval pause, same as chore chain
-8. On completion, mark workflow complete
+10. On completion, mark workflow complete
 
 ## Feature Chain Step Sequence
 

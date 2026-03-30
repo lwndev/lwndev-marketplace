@@ -8,7 +8,7 @@ Add bug fix workflow chain support to the existing `orchestrating-workflows` ski
 
 | Feature ID | GitHub Issue | Feature Document | Priority | Complexity | Status |
 |------------|--------------|------------------|----------|------------|--------|
-| FEAT-011 | [#91](https://github.com/lwndev/lwndev-marketplace/issues/91) | [FEAT-011-orchestrate-bug-fix-workflow-chain.md](../features/FEAT-011-orchestrate-bug-fix-workflow-chain.md) | High | Medium | Pending |
+| FEAT-011 | [#91](https://github.com/lwndev/lwndev-marketplace/issues/91) | [FEAT-011-orchestrate-bug-fix-workflow-chain.md](../features/FEAT-011-orchestrate-bug-fix-workflow-chain.md) | High | Medium | ✅ Complete |
 
 ## Recommended Build Sequence
 
