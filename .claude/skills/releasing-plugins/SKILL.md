@@ -5,9 +5,8 @@ allowed-tools: Bash Skill
 hooks:
   Stop:
     - hooks:
-        - type: prompt
-          prompt: "You are evaluating whether Claude should stop. Context: $ARGUMENTS\n\nA prompt hook is a single-turn LLM call with no tool access — you can only evaluate based on the input fields provided, not by reading files.\n\nIMPORTANT: You must respond with ONLY a JSON object — no markdown, no explanation, no wrapping. Just raw JSON.\n\nIf stop_hook_active is true in the input, respond {\"ok\": true} immediately.\n\nOtherwise, examine last_assistant_message to determine which release phase is active and whether it is complete.\n\nPhase 1 (pre-merge) requires: release branch created, release script ran, release commit reviewed, branch pushed, PR opened with URL, and user told to re-invoke for Phase 2.\n\nPhase 2 (post-merge) requires: confirmed merge and on main, git tag created via release:tag, tag pushed.\n\nRespond {\"ok\": true} if all criteria for the detected phase are met, or {\"ok\": false, \"reason\": \"what remains\"} if not."
-          model: haiku
+        - type: command
+          command: "bash .claude/skills/releasing-plugins/scripts/stop-hook.sh"
 ---
 
 # Releasing Plugins

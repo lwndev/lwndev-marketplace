@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { readFile } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { join } from 'node:path';
 import { validate, type DetailedValidateResult } from 'ai-skills-manager';
 
 const SKILL_DIR = 'plugins/lwndev-sdlc/skills/executing-qa';
 const SKILL_MD_PATH = join(SKILL_DIR, 'SKILL.md');
 const TEMPLATE_PATH = join(SKILL_DIR, 'assets', 'test-results-template.md');
+const STOP_HOOK_PATH = join(SKILL_DIR, 'scripts', 'stop-hook.sh');
 
 describe('executing-qa skill', () => {
   let skillMd: string;
@@ -100,25 +102,23 @@ describe('executing-qa skill', () => {
       expect(skillMd).toMatch(/^---\s*\n[\s\S]*?hooks:[\s\S]*?Stop:[\s\S]*?---/);
     });
 
-    it('should use type: prompt for the stop hook', () => {
+    it('should use type: command for the stop hook', () => {
       const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('type: prompt');
+      expect(frontmatter).toContain('type: command');
     });
 
-    it('should use haiku model for the stop hook', () => {
+    it('should point to the stop-hook.sh script', () => {
       const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('model: haiku');
+      expect(frontmatter).toContain('stop-hook.sh');
     });
 
-    it('should check stop_hook_active to prevent infinite loops', () => {
+    it('should not use type: prompt (replaced by command hook)', () => {
       const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('stop_hook_active');
+      expect(frontmatter).not.toContain('type: prompt');
     });
 
-    it('should handle both verification and reconciliation phases', () => {
-      const frontmatter = skillMd.match(/^---\s*\n([\s\S]*?)---/)?.[1] ?? '';
-      expect(frontmatter).toContain('QA verification');
-      expect(frontmatter).toContain('reconciliation');
+    it('should have an executable stop-hook.sh script', async () => {
+      await expect(access(STOP_HOOK_PATH, constants.X_OK)).resolves.toBeUndefined();
     });
   });
 

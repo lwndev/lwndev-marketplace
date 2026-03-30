@@ -11,9 +11,8 @@ allowed-tools:
 hooks:
   Stop:
     - hooks:
-        - type: prompt
-          prompt: "You are evaluating whether Claude should stop. Context: $ARGUMENTS\n\nA prompt hook is a single-turn LLM call with no tool access — you can only evaluate based on the input fields provided, not by reading files.\n\nIMPORTANT: You must respond with ONLY a JSON object — no markdown, no explanation, no wrapping. Just raw JSON.\n\nIf stop_hook_active is true in the input, respond {\"ok\": true} immediately.\n\nOtherwise, examine last_assistant_message. Claude should have delegated to a qa-verifier subagent and received a completeness verdict. Based on Claude's last message, determine if the test plan covers every acceptance criterion, FR-N, RC-N, and phase deliverable from the source requirements.\n\nRespond {\"ok\": true} if Claude's message indicates the plan is complete, or {\"ok\": false, \"reason\": \"what appears to be missing\"} if gaps remain."
-          model: haiku
+        - type: command
+          command: "bash plugins/lwndev-sdlc/skills/documenting-qa/scripts/stop-hook.sh"
 argument-hint: <requirement-id>
 ---
 
@@ -129,13 +128,13 @@ If the subagent identifies gaps:
 - Add the missing items to the test plan
 - Re-delegate to the subagent for another verification pass
 
-**After each verification round, attempt to finish.** The Stop hook will evaluate your last message to determine if the plan is truly complete. If gaps remain, it will block with `{"ok": false, "reason": "..."}` and feed the missing items back to you. Continue adding missing items and re-verifying until the hook allows completion.
+**After each verification round, attempt to finish.** The Stop hook will evaluate your last message to determine if the plan is truly complete. If gaps remain, it will block and feed the missing items back to you. Continue adding missing items and re-verifying until the hook allows completion.
 
-**Important**: State the verification results clearly in your message when attempting to finish — the Stop hook is a prompt-based evaluator with no tool access. It can only assess completeness from what you report in your message.
+**Important**: State the verification results clearly in your message when attempting to finish — the Stop hook uses pattern matching on your last message to assess completeness. Mention the test plan file path (e.g., `QA-plan-FEAT-003`) and confirm that the plan is complete/verified/saved.
 
 ### Minimizing Verification Iterations
 
-This verification loop involves multiple API calls across models: the main conversation, the qa-verifier subagent (Sonnet), and the Stop hook evaluator (Haiku). To reduce cumulative API pressure:
+This verification loop involves multiple API calls: the main conversation and the qa-verifier subagent (Sonnet). To reduce cumulative API pressure:
 
 - **Build a thorough test plan in Step 3 before entering verification.** Cover every AC, FR-N, RC-N, and phase deliverable on the first pass rather than relying on the verification loop to catch gaps iteratively.
 - **When the subagent identifies gaps, address all of them in a single pass** before re-delegating — do not fix one gap at a time.

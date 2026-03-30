@@ -12,9 +12,8 @@ allowed-tools:
 hooks:
   Stop:
     - hooks:
-        - type: prompt
-          prompt: "You are evaluating whether Claude should stop. Context: $ARGUMENTS\n\nA prompt hook is a single-turn LLM call with no tool access — you can only evaluate based on the input fields provided, not by reading files.\n\nIMPORTANT: You must respond with ONLY a JSON object — no markdown, no explanation, no wrapping. Just raw JSON.\n\nIf stop_hook_active is true in the input, respond {\"ok\": true} immediately.\n\nOtherwise, examine last_assistant_message to determine the current phase:\n(1) If QA verification is in progress: does Claude's message indicate the qa-verifier returned a clean pass verdict with no remaining issues?\n(2) If verification passed and documentation reconciliation is in progress: does Claude's message indicate all reconciliation areas are covered?\n\nRespond {\"ok\": true} if the current phase is complete, or {\"ok\": false, \"reason\": \"what appears to remain\"} if not."
-          model: haiku
+        - type: command
+          command: "bash plugins/lwndev-sdlc/skills/executing-qa/scripts/stop-hook.sh"
 argument-hint: <requirement-id>
 ---
 
@@ -92,7 +91,7 @@ This loop directly verifies each test plan entry, identifies failed entries, fix
 
 4. **After each fix-and-verify round, attempt to finish.** The Stop hook evaluates your last message:
    - If verification passed cleanly → the hook allows stop (you proceed to reconciliation)
-   - If issues remain → the hook blocks with `{"ok": false, "reason": "..."}` and feeds remaining issues back to you
+   - If issues remain → the hook blocks and feeds remaining issues back to you
    - Continue fixing and re-verifying until the hook allows completion of this phase
 
 ### Type-Specific Verification
@@ -123,7 +122,7 @@ After each verification iteration, write back the results to the test plan docum
 
 This keeps the test plan as a living document that reflects the current verification state.
 
-**Important**: State the verification results clearly in your message when attempting to finish — the Stop hook is a prompt-based evaluator with no tool access. It can only assess the phase from what you report.
+**Important**: State the verification results clearly in your message when attempting to finish — the Stop hook uses pattern matching on your last message to assess the phase. Mention that "QA verification passed" and include the results file path.
 
 ## Step 3: Reconciliation Loop
 
@@ -165,9 +164,9 @@ When editing requirements documents, preserve existing structure and functionali
 
 After each reconciliation pass, attempt to finish. The same Stop hook detects the reconciliation phase and evaluates whether all areas are covered:
 - If all reconciliation areas are addressed → the hook allows stop
-- If areas remain → the hook blocks with `{"ok": false, "reason": "..."}` and feeds remaining work back to you
+- If areas remain → the hook blocks and feeds remaining work back to you
 
-**Important**: Clearly state which reconciliation areas you've covered in your message when attempting to finish.
+**Important**: Clearly state which reconciliation areas you've covered in your message when attempting to finish. Mention that "reconciliation is complete" so the Stop hook's pattern matching can detect it.
 
 ## Step 4: Save Results and Present
 
