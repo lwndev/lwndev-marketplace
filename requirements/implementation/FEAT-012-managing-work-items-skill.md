@@ -110,7 +110,7 @@ This is a single feature (FEAT-012) divided into five phases that follow a found
 
 ### Phase 3: Refactor Execution Skills
 **Feature:** [FEAT-012](../features/FEAT-012-managing-work-items-skill.md) | [#119](https://github.com/lwndev/lwndev-marketplace/issues/119)
-**Status:** Pending
+**Status:** ✅ Complete
 **Depends on:** Phase 1 (consolidated github-templates.md in managing-work-items), Phase 2 (complete Jira support)
 
 #### Rationale
@@ -160,16 +160,16 @@ This is a single feature (FEAT-012) divided into five phases that follow a found
     - Verify SKILL.md contains delegation note referencing `managing-work-items`
 
 #### Deliverables
-- [ ] Updated `plugins/lwndev-sdlc/skills/implementing-plan-phases/SKILL.md` -- removed inline `gh issue` operations, added delegation note
-- [ ] Updated `plugins/lwndev-sdlc/skills/implementing-plan-phases/references/step-details.md` -- removed/replaced GitHub issue steps
-- [ ] Deleted `plugins/lwndev-sdlc/skills/implementing-plan-phases/references/github-templates.md`
-- [ ] Updated `plugins/lwndev-sdlc/skills/executing-chores/SKILL.md` -- removed inline issue operations, added delegation note
-- [ ] Updated `plugins/lwndev-sdlc/skills/executing-chores/references/workflow-details.md` -- removed/replaced GitHub issue steps
-- [ ] Deleted `plugins/lwndev-sdlc/skills/executing-chores/references/github-templates.md`
-- [ ] Updated `plugins/lwndev-sdlc/skills/executing-bug-fixes/SKILL.md` -- removed inline issue operations, added delegation note
-- [ ] Updated `plugins/lwndev-sdlc/skills/executing-bug-fixes/references/workflow-details.md` -- removed/replaced GitHub issue steps
-- [ ] Deleted `plugins/lwndev-sdlc/skills/executing-bug-fixes/references/github-templates.md`
-- [ ] Updated tests in `scripts/__tests__/implementing-plan-phases.test.ts`, `scripts/__tests__/executing-chores.test.ts`, `scripts/__tests__/executing-bug-fixes.test.ts`
+- [x] Updated `plugins/lwndev-sdlc/skills/implementing-plan-phases/SKILL.md` -- removed inline `gh issue` operations, added delegation note
+- [x] Updated `plugins/lwndev-sdlc/skills/implementing-plan-phases/references/step-details.md` -- removed/replaced GitHub issue steps
+- [x] Deleted `plugins/lwndev-sdlc/skills/implementing-plan-phases/references/github-templates.md`
+- [x] Updated `plugins/lwndev-sdlc/skills/executing-chores/SKILL.md` -- removed inline issue operations, added delegation note
+- [x] Updated `plugins/lwndev-sdlc/skills/executing-chores/references/workflow-details.md` -- removed/replaced GitHub issue steps
+- [x] Deleted `plugins/lwndev-sdlc/skills/executing-chores/references/github-templates.md`
+- [x] Updated `plugins/lwndev-sdlc/skills/executing-bug-fixes/SKILL.md` -- removed inline issue operations, added delegation note
+- [x] Updated `plugins/lwndev-sdlc/skills/executing-bug-fixes/references/workflow-details.md` -- removed/replaced GitHub issue steps
+- [x] Deleted `plugins/lwndev-sdlc/skills/executing-bug-fixes/references/github-templates.md`
+- [x] Updated tests in `scripts/__tests__/implementing-plan-phases.test.ts`, `scripts/__tests__/executing-chores.test.ts`, `scripts/__tests__/executing-bug-fixes.test.ts`
 
 ---
 
