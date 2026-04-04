@@ -175,7 +175,7 @@ This is a single feature (FEAT-012) divided into five phases that follow a found
 
 ### Phase 4: Refactor Documentation Skill
 **Feature:** [FEAT-012](../features/FEAT-012-managing-work-items-skill.md) | [#119](https://github.com/lwndev/lwndev-marketplace/issues/119)
-**Status:** Pending
+**Status:** ✅ Complete
 **Depends on:** Phase 1 (managing-work-items fetch operation)
 
 #### Rationale
@@ -197,8 +197,8 @@ This is a single feature (FEAT-012) divided into five phases that follow a found
 4. Run `npm run validate` and `npm test`
 
 #### Deliverables
-- [ ] Updated `plugins/lwndev-sdlc/skills/documenting-features/SKILL.md` -- delegated issue fetch to `managing-work-items`
-- [ ] Updated `scripts/__tests__/documenting-features.test.ts` -- updated test assertions for delegation
+- [x] Updated `plugins/lwndev-sdlc/skills/documenting-features/SKILL.md` -- delegated issue fetch to `managing-work-items`
+- [x] Updated `scripts/__tests__/documenting-features.test.ts` -- updated test assertions for delegation
 
 ---
 
