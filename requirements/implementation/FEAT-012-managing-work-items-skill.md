@@ -204,7 +204,7 @@ This is a single feature (FEAT-012) divided into five phases that follow a found
 
 ### Phase 5: Update Orchestrator with Managing Work Items Invocation Points
 **Feature:** [FEAT-012](../features/FEAT-012-managing-work-items-skill.md) | [#119](https://github.com/lwndev/lwndev-marketplace/issues/119)
-**Status:** Pending
+**Status:** ✅ Complete
 **Depends on:** Phase 1 (managing-work-items skill exists), Phase 2 (Jira support complete), Phase 3 (execution skills refactored), Phase 4 (documentation skill refactored)
 
 #### Rationale
@@ -238,8 +238,8 @@ This is a single feature (FEAT-012) divided into five phases that follow a found
 9. Run `npm run validate` and `npm test`
 
 #### Deliverables
-- [ ] Updated `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` -- `managing-work-items` invocation points for feature, chore, and bug chains; issue reference flow documentation; skip behavior; updated relationship diagrams; updated verification checklist
-- [ ] Updated `scripts/__tests__/orchestrating-workflows.test.ts` -- managing-work-items integration assertions
+- [x] Updated `plugins/lwndev-sdlc/skills/orchestrating-workflows/SKILL.md` -- `managing-work-items` invocation points for feature, chore, and bug chains; issue reference flow documentation; skip behavior; updated relationship diagrams; updated verification checklist
+- [x] Updated `scripts/__tests__/orchestrating-workflows.test.ts` -- managing-work-items integration assertions
 
 ---
 
